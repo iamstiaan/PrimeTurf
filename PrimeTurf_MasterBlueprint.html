@@ -3,811 +3,1880 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PrimeTurf — Master Launch Blueprint</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lora:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet">
+<title>PrimeTurf · Master Blueprint</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Cinzel:wght@400;500;600;700;800;900&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
+/* ── BRAND TOKENS (inherited from Brand System Doc 01) ── */
 :root {
-  --black: #0d0d0b;
-  --offwhite: #f5f2ec;
-  --green: #3a7d44;
-  --green-vivid: #4caf65;
-  --green-pale: #c8e6cf;
-  --gold: #c8953a;
-  --red: #c0392b;
-  --grey: #888;
-  --border: #e0dbd0;
+  --deep-forest: #1A3A2A;
+  --vivid-green: #4CAF65;
+  --harvest-gold: #C8953A;
+  --warm-white: #F5F2EC;
+  --midnight: #0D0D0B;
+  --gold-light: #E8B86D;
+  --danger: #E05555;
+  --section-alt: rgba(26,58,42,0.08);
 }
-* { margin:0; padding:0; box-sizing:border-box; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body { background: var(--offwhite); color: var(--black); font-family: 'Lora', serif; }
+body { background: var(--midnight); color: var(--warm-white); font-family: 'Montserrat', sans-serif; font-weight: 300; line-height: 1.7; overflow-x: hidden; }
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 9999; opacity: 0.4; }
 
-/* NAV */
-nav {
-  position: sticky; top: 0; z-index: 100;
-  background: var(--black);
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 40px; height: 56px;
-  border-bottom: 2px solid var(--green);
+/* ── SHARED PRIMITIVES ── */
+.h-rule { width: 100%; height: 1px; background: linear-gradient(to right, transparent, rgba(200,149,58,0.3), transparent); }
+.small-caps { font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.4em; text-transform: uppercase; color: rgba(200,149,58,0.6); }
+.gold { color: var(--harvest-gold); }
+.italic-lead { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 300; font-style: italic; color: rgba(245,242,236,0.55); line-height: 1.7; max-width: 720px; margin-bottom: 56px; }
+
+/* ── COVER ── */
+.cover { min-height: 100vh; display: grid; place-items: center; position: relative; overflow: hidden; background: var(--midnight); }
+.cover-bg { position: absolute; inset: 0; background: radial-gradient(ellipse 60% 50% at 20% 50%, rgba(26,58,42,0.65) 0%, transparent 70%), radial-gradient(ellipse 40% 60% at 80% 20%, rgba(200,149,58,0.07) 0%, transparent 60%), radial-gradient(ellipse 80% 40% at 50% 100%, rgba(26,58,42,0.4) 0%, transparent 60%); }
+.cover-lines { position: absolute; inset: 0; background-image: repeating-linear-gradient(0deg, transparent, transparent 79px, rgba(200,149,58,0.04) 79px, rgba(200,149,58,0.04) 80px), repeating-linear-gradient(90deg, transparent, transparent 79px, rgba(200,149,58,0.04) 79px, rgba(200,149,58,0.04) 80px); }
+.cover-inner { position: relative; z-index: 2; text-align: center; padding: 80px 40px; max-width: 960px; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+.cover-inner > * { animation: fadeUp 1s ease forwards; opacity: 0; }
+.cover-inner > *:nth-child(1){animation-delay:.1s} .cover-inner > *:nth-child(2){animation-delay:.3s} .cover-inner > *:nth-child(3){animation-delay:.5s} .cover-inner > *:nth-child(4){animation-delay:.7s} .cover-inner > *:nth-child(5){animation-delay:.9s} .cover-inner > *:nth-child(6){animation-delay:1.1s} .cover-inner > *:nth-child(7){animation-delay:1.3s} .cover-inner > *:nth-child(8){animation-delay:1.5s} .cover-inner > *:nth-child(9){animation-delay:1.7s}
+.doc-badge { display: inline-block; font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.4em; color: var(--harvest-gold); border: 1px solid rgba(200,149,58,0.4); padding: 8px 24px; margin-bottom: 60px; text-transform: uppercase; }
+.cover-monogram { width: 120px; height: 120px; border: 2px solid rgba(200,149,58,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 48px; position: relative; }
+.cover-monogram::before { content: ''; position: absolute; inset: -8px; border: 1px solid rgba(200,149,58,0.12); border-radius: 50%; }
+.cover-title { font-family: 'Cinzel', serif; font-size: clamp(52px, 8vw, 96px); font-weight: 700; letter-spacing: 0.12em; line-height: 0.9; margin-bottom: 16px; }
+.cover-title .turf { color: var(--harvest-gold); }
+.cover-subtitle { font-family: 'Cormorant Garamond', serif; font-size: clamp(16px, 2.5vw, 22px); font-weight: 300; font-style: italic; letter-spacing: 0.25em; color: rgba(245,242,236,0.5); margin-bottom: 8px; text-transform: uppercase; }
+.cover-tagline { font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.5em; color: rgba(200,149,58,0.6); text-transform: uppercase; margin-bottom: 80px; }
+.cover-divider { width: 1px; height: 60px; background: linear-gradient(to bottom, transparent, var(--harvest-gold), transparent); margin: 0 auto 60px; }
+.cover-meta { font-size: 11px; letter-spacing: 0.3em; color: rgba(245,242,236,0.25); text-transform: uppercase; }
+.cover-doc-info { display: flex; justify-content: center; gap: 40px; margin-top: 32px; flex-wrap: wrap; }
+.cover-doc-info span { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.3em; color: rgba(245,242,236,0.2); text-transform: uppercase; }
+.cover-doc-info span strong { color: rgba(200,149,58,0.5); }
+
+/* ── NAV / TOC ── */
+.nav-bar { position: sticky; top: 0; z-index: 100; background: rgba(13,13,11,0.96); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(200,149,58,0.12); padding: 0 40px; display: flex; align-items: center; justify-content: space-between; height: 56px; }
+.nav-logo { font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 0.3em; color: var(--warm-white); }
+.nav-logo span { color: var(--harvest-gold); }
+.nav-doc { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 0.4em; color: rgba(200,149,58,0.4); text-transform: uppercase; }
+.toc { background: var(--deep-forest); padding: 80px 60px; position: relative; overflow: hidden; }
+.toc::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(to right, transparent, var(--harvest-gold), transparent); }
+.toc-label { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.5em; color: var(--harvest-gold); text-transform: uppercase; margin-bottom: 40px; }
+.toc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2px; }
+.toc-item { display: flex; align-items: center; gap: 20px; padding: 18px 24px; background: rgba(0,0,0,0.2); text-decoration: none; color: var(--warm-white); transition: all 0.3s; border-left: 2px solid transparent; }
+.toc-item:hover { background: rgba(200,149,58,0.08); border-left-color: var(--harvest-gold); }
+.toc-num { font-family: 'Cinzel', serif; font-size: 11px; color: var(--harvest-gold); opacity: 0.6; min-width: 28px; }
+.toc-name { font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; }
+
+/* ── SECTION SCAFFOLDING ── */
+.section { padding: 112px 60px; position: relative; max-width: 1400px; margin: 0 auto; }
+.section-header { display: flex; align-items: baseline; gap: 24px; margin-bottom: 64px; padding-bottom: 24px; border-bottom: 1px solid rgba(200,149,58,0.2); flex-wrap: wrap; }
+.section-num { font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.4em; color: var(--harvest-gold); opacity: 0.7; text-transform: uppercase; white-space: nowrap; }
+.section-title { font-family: 'Cinzel', serif; font-size: clamp(20px, 2.8vw, 34px); font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--warm-white); }
+.section-rule { flex: 1; height: 1px; background: rgba(200,149,58,0.15); margin-left: 16px; min-width: 40px; }
+.section-badge { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.4em; color: var(--harvest-gold); text-transform: uppercase; padding: 6px 16px; border: 1px solid rgba(200,149,58,0.4); white-space: nowrap; }
+
+/* ── CARD SYSTEM ── */
+.card-grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; }
+.card-grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 2px; }
+.card-grid-2 { display: grid; grid-template-columns: repeat(2,1fr); gap: 2px; }
+.card { background: rgba(255,255,255,0.02); border: 1px solid rgba(200,149,58,0.08); padding: 40px 36px; transition: all 0.3s; position: relative; overflow: hidden; }
+.card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: linear-gradient(to right, transparent, var(--harvest-gold), transparent); transform: scaleX(0); transition: transform 0.4s; }
+.card:hover::after { transform: scaleX(1); }
+.card:hover { background: rgba(26,58,42,0.18); border-color: rgba(200,149,58,0.2); }
+.card-forest { background: rgba(26,58,42,0.25); border-color: rgba(200,149,58,0.12); }
+.card-icon { width: 44px; height: 44px; margin-bottom: 28px; opacity: 0.5; display: block; transition: opacity 0.3s; }
+.card:hover .card-icon { opacity: 0.9; }
+.card-label { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.4em; color: var(--harvest-gold); text-transform: uppercase; margin-bottom: 12px; }
+.card-title { font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 0.2em; color: var(--warm-white); text-transform: uppercase; margin-bottom: 16px; }
+.card-body { font-size: 12px; color: rgba(245,242,236,0.5); line-height: 1.8; letter-spacing: 0.04em; }
+.card-num { font-family: 'Cormorant Garamond', serif; font-size: 48px; font-weight: 300; color: var(--harvest-gold); opacity: 0.25; line-height: 1; margin-bottom: 16px; }
+
+/* ── KPI CARDS ── */
+.kpi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 2px; margin-bottom: 2px; }
+.kpi-card { background: rgba(26,58,42,0.3); border: 1px solid rgba(200,149,58,0.12); padding: 36px 32px; position: relative; overflow: hidden; }
+.kpi-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--harvest-gold); transform: scaleX(0); transform-origin: left; transition: transform 0.5s; }
+.kpi-card:hover::before { transform: scaleX(1); }
+.kpi-label { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 0.4em; color: rgba(200,149,58,0.6); text-transform: uppercase; margin-bottom: 16px; }
+.kpi-value { font-family: 'Cormorant Garamond', serif; font-size: 44px; font-weight: 300; color: var(--warm-white); line-height: 1; margin-bottom: 8px; }
+.kpi-value span { color: var(--harvest-gold); }
+.kpi-sub { font-size: 11px; color: rgba(245,242,236,0.3); letter-spacing: 0.15em; }
+
+/* ── PROCESS / WORKFLOW ── */
+.process-flow { display: flex; gap: 0; align-items: stretch; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 8px; }
+.process-step { flex: 1; min-width: 160px; background: rgba(26,58,42,0.2); border: 1px solid rgba(200,149,58,0.1); padding: 32px 24px; position: relative; }
+.process-step:not(:last-child)::after { content: '›'; position: absolute; right: -14px; top: 50%; transform: translateY(-50%); font-size: 24px; color: var(--harvest-gold); opacity: 0.5; z-index: 2; }
+.process-step-num { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.4em; color: var(--harvest-gold); opacity: 0.6; margin-bottom: 12px; }
+.process-step-title { font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: 0.2em; color: var(--warm-white); text-transform: uppercase; margin-bottom: 10px; }
+.process-step-body { font-size: 11px; color: rgba(245,242,236,0.4); line-height: 1.7; }
+
+/* ── TIMELINE / ROADMAP ── */
+.roadmap { position: relative; padding-left: 48px; }
+.roadmap::before { content: ''; position: absolute; left: 16px; top: 0; bottom: 0; width: 1px; background: linear-gradient(to bottom, transparent, rgba(200,149,58,0.4) 10%, rgba(200,149,58,0.4) 90%, transparent); }
+.roadmap-item { position: relative; margin-bottom: 48px; }
+.roadmap-dot { position: absolute; left: -40px; top: 4px; width: 14px; height: 14px; border: 2px solid var(--harvest-gold); border-radius: 50%; background: var(--midnight); }
+.roadmap-dot.active { background: var(--harvest-gold); }
+.roadmap-phase { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.4em; color: var(--harvest-gold); text-transform: uppercase; margin-bottom: 6px; }
+.roadmap-title { font-family: 'Cinzel', serif; font-size: 16px; letter-spacing: 0.2em; color: var(--warm-white); margin-bottom: 12px; }
+.roadmap-body { font-size: 12px; color: rgba(245,242,236,0.45); line-height: 1.8; max-width: 640px; }
+.roadmap-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.rtag { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 0.3em; color: rgba(200,149,58,0.7); border: 1px solid rgba(200,149,58,0.2); padding: 4px 12px; text-transform: uppercase; }
+
+/* ── TABLE ── */
+.pt-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.pt-table th { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 0.4em; color: var(--harvest-gold); text-transform: uppercase; padding: 16px 20px; border-bottom: 1px solid rgba(200,149,58,0.2); text-align: left; background: rgba(26,58,42,0.3); }
+.pt-table td { padding: 16px 20px; border-bottom: 1px solid rgba(255,255,255,0.04); color: rgba(245,242,236,0.65); letter-spacing: 0.05em; line-height: 1.6; }
+.pt-table tr:hover td { background: rgba(200,149,58,0.03); }
+
+/* ── MATRIX ── */
+.matrix-table { width: 100%; border-collapse: collapse; }
+.matrix-table th { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 0.35em; color: var(--harvest-gold); text-transform: uppercase; padding: 14px 18px; background: rgba(26,58,42,0.4); border: 1px solid rgba(200,149,58,0.1); text-align: center; }
+.matrix-table td { padding: 14px 18px; border: 1px solid rgba(255,255,255,0.04); font-size: 11px; color: rgba(245,242,236,0.5); text-align: center; }
+.matrix-table td.owner { background: rgba(200,149,58,0.12); color: var(--harvest-gold); font-weight: 600; }
+.matrix-table td.consult { background: rgba(26,58,42,0.3); color: rgba(76,175,101,0.8); }
+.matrix-table td.inform { background: rgba(255,255,255,0.02); color: rgba(245,242,236,0.3); }
+.matrix-table td.row-head { font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.15em; color: var(--warm-white); text-align: left; background: rgba(0,0,0,0.2); }
+
+/* ── STAT BARS ── */
+.stat-bar-row { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+.stat-bar-label { font-size: 11px; letter-spacing: 0.1em; color: rgba(245,242,236,0.5); min-width: 200px; }
+.stat-bar-track { flex: 1; height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
+.stat-bar-fill { height: 100%; background: linear-gradient(to right, var(--deep-forest), var(--harvest-gold)); border-radius: 2px; transition: width 1s ease; }
+.stat-bar-val { font-family: 'Cinzel', serif; font-size: 11px; color: var(--harvest-gold); min-width: 36px; text-align: right; }
+
+/* ── QUOTE / PRINCIPLE ── */
+.principle-block { border-left: 2px solid var(--harvest-gold); padding: 24px 32px; background: rgba(26,58,42,0.15); margin-bottom: 24px; }
+.principle-text { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 300; font-style: italic; color: var(--warm-white); line-height: 1.5; margin-bottom: 12px; }
+.principle-attr { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.4em; color: var(--harvest-gold); text-transform: uppercase; }
+
+/* ── LIST ITEMS ── */
+.pt-list { list-style: none; padding: 0; }
+.pt-list li { display: flex; gap: 16px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 13px; color: rgba(245,242,236,0.65); line-height: 1.6; }
+.pt-list li::before { content: '—'; color: var(--harvest-gold); flex-shrink: 0; font-family: 'Cinzel', serif; }
+.pt-list li strong { color: var(--warm-white); font-weight: 500; }
+.check-list { list-style: none; padding: 0; }
+.check-list li { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; font-size: 13px; color: rgba(245,242,236,0.6); line-height: 1.6; border-bottom: 1px solid rgba(255,255,255,0.03); }
+.check-list li::before { content: '✓'; color: var(--vivid-green); flex-shrink: 0; font-size: 12px; margin-top: 2px; }
+
+/* ── JOURNEY / FUNNEL ── */
+.journey-step { display: grid; grid-template-columns: 64px 1fr; gap: 24px; margin-bottom: 32px; align-items: start; }
+.journey-node { width: 56px; height: 56px; border: 1px solid rgba(200,149,58,0.4); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.journey-node-num { font-family: 'Cinzel', serif; font-size: 18px; color: var(--harvest-gold); }
+.journey-content-title { font-family: 'Cinzel', serif; font-size: 13px; letter-spacing: 0.2em; color: var(--warm-white); text-transform: uppercase; margin-bottom: 8px; }
+.journey-content-body { font-size: 12px; color: rgba(245,242,236,0.5); line-height: 1.8; }
+.journey-connector { width: 1px; height: 24px; background: rgba(200,149,58,0.25); margin: 0 0 0 27px; }
+
+/* ── RISK MATRIX ── */
+.risk-item { display: grid; grid-template-columns: 1fr auto; gap: 24px; padding: 20px 24px; border: 1px solid rgba(255,255,255,0.04); margin-bottom: 2px; align-items: center; background: rgba(255,255,255,0.01); }
+.risk-item:hover { background: rgba(200,149,58,0.03); }
+.risk-name { font-size: 13px; color: rgba(245,242,236,0.7); margin-bottom: 4px; }
+.risk-mitigation { font-size: 11px; color: rgba(245,242,236,0.35); line-height: 1.6; }
+.risk-badge { padding: 4px 14px; font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; border: 1px solid; white-space: nowrap; }
+.risk-badge.low { color: var(--vivid-green); border-color: rgba(76,175,101,0.3); background: rgba(76,175,101,0.05); }
+.risk-badge.med { color: var(--harvest-gold); border-color: rgba(200,149,58,0.3); background: rgba(200,149,58,0.05); }
+.risk-badge.high { color: var(--danger); border-color: rgba(224,85,85,0.3); background: rgba(224,85,85,0.05); }
+
+/* ── INCENTIVE / GROWTH TIERS ── */
+.tier-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; }
+.tier-card { border: 1px solid rgba(200,149,58,0.1); padding: 48px 36px; position: relative; overflow: hidden; text-align: center; }
+.tier-card.featured { border-color: rgba(200,149,58,0.4); background: rgba(26,58,42,0.25); }
+.tier-card.featured::before { content: 'FOUNDING STAGE'; position: absolute; top: 0; left: 0; right: 0; background: var(--harvest-gold); color: var(--midnight); font-family: 'Cinzel',serif; font-size: 9px; letter-spacing: 0.4em; padding: 6px 0; text-align: center; }
+.tier-label { font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.4em; color: var(--harvest-gold); text-transform: uppercase; margin-bottom: 20px; margin-top: 8px; }
+.tier-name { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 300; color: var(--warm-white); margin-bottom: 24px; }
+.tier-divider { width: 40px; height: 1px; background: rgba(200,149,58,0.3); margin: 0 auto 24px; }
+.tier-item { font-size: 12px; color: rgba(245,242,236,0.55); padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.04); line-height: 1.7; }
+
+/* ── TECH STACK ── */
+.stack-layer { margin-bottom: 2px; display: grid; grid-template-columns: 200px 1fr; gap: 0; }
+.stack-label { background: rgba(26,58,42,0.5); border: 1px solid rgba(200,149,58,0.1); padding: 24px 28px; display: flex; align-items: center; }
+.stack-label-text { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.35em; color: var(--harvest-gold); text-transform: uppercase; }
+.stack-tools { background: rgba(255,255,255,0.02); border: 1px solid rgba(200,149,58,0.06); border-left: none; padding: 24px 28px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.stack-tool { font-size: 11px; letter-spacing: 0.1em; color: rgba(245,242,236,0.6); padding: 6px 16px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); }
+
+/* ── EXPANSION MAP ── */
+.expansion-phases { display: grid; grid-template-columns: repeat(5,1fr); gap: 2px; }
+.exp-phase { padding: 32px 24px; border: 1px solid rgba(200,149,58,0.08); position: relative; text-align: center; }
+.exp-phase.active { background: rgba(26,58,42,0.3); border-color: rgba(200,149,58,0.3); }
+.exp-phase-yr { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.4em; color: var(--harvest-gold); text-transform: uppercase; margin-bottom: 16px; }
+.exp-phase-title { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 400; color: var(--warm-white); margin-bottom: 16px; }
+.exp-phase-body { font-size: 11px; color: rgba(245,242,236,0.4); line-height: 1.7; }
+
+/* ── FOOTER ── */
+.brand-footer { background: var(--deep-forest); padding: 80px 60px; text-align: center; position: relative; }
+.brand-footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(to right, transparent, var(--harvest-gold), transparent); }
+.footer-logo { font-family: 'Cinzel', serif; font-size: 32px; font-weight: 700; letter-spacing: 0.3em; margin-bottom: 16px; }
+.footer-logo span { color: var(--harvest-gold); }
+.footer-sub { font-family: 'Cormorant Garamond', serif; font-size: 16px; font-style: italic; letter-spacing: 0.3em; color: rgba(245,242,236,0.4); margin-bottom: 48px; }
+.footer-declaration { max-width: 600px; margin: 0 auto 40px; font-size: 11px; letter-spacing: 0.2em; color: rgba(245,242,236,0.2); text-transform: uppercase; line-height: 2; }
+.footer-stamp { display: inline-block; border: 1px solid rgba(200,149,58,0.3); padding: 12px 32px; font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.4em; color: var(--harvest-gold); text-transform: uppercase; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1100px) {
+  .kpi-grid { grid-template-columns: repeat(2,1fr); }
+  .expansion-phases { grid-template-columns: repeat(3,1fr); }
 }
-.nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--green-vivid); letter-spacing: 2px; }
-.nav-links { display: flex; gap: 24px; list-style: none; }
-.nav-links a { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 2px; color: #888; text-decoration: none; text-transform: uppercase; transition: color .2s; }
-.nav-links a:hover { color: var(--green-vivid); }
-
-/* HERO */
-.hero {
-  background: var(--black);
-  padding: 100px 60px 80px;
-  position: relative; overflow: hidden;
+@media (max-width: 900px) {
+  .section { padding: 72px 28px; }
+  .toc { padding: 60px 28px; }
+  .card-grid-3, .card-grid-4, .tier-grid { grid-template-columns: repeat(2,1fr); }
+  .stack-layer { grid-template-columns: 1fr; }
+  .stack-tools { border-left: 1px solid rgba(200,149,58,0.06); border-top: none; }
+  .process-flow { gap: 2px; flex-wrap: wrap; }
+  .process-step:not(:last-child)::after { display: none; }
+  .expansion-phases { grid-template-columns: repeat(2,1fr); }
 }
-.hero::after {
-  content: 'PRIME TURF';
-  position: absolute; right: -20px; top: 50%; transform: translateY(-50%);
-  font-family: 'Bebas Neue', sans-serif; font-size: 200px; color: #ffffff05;
-  letter-spacing: -4px; white-space: nowrap; pointer-events: none;
-}
-.hero-tag { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 4px; color: var(--green-vivid); text-transform: uppercase; margin-bottom: 20px; }
-.hero h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(60px, 10vw, 130px); color: #fff; line-height: .95; letter-spacing: 2px; }
-.hero h1 em { color: var(--green-vivid); font-style: normal; display: block; }
-.hero-sub { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #aaa; margin-top: 28px; max-width: 560px; line-height: 1.8; }
-.hero-people {
-  display: flex; gap: 40px; margin-top: 60px; flex-wrap: wrap;
-}
-.person { border-left: 3px solid var(--green); padding-left: 16px; }
-.person .role { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 3px; color: var(--green-vivid); text-transform: uppercase; }
-.person .name { font-size: 16px; color: #fff; font-weight: 600; margin-top: 4px; }
-.person .title { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #666; margin-top: 2px; }
-
-/* SECTIONS */
-section { padding: 80px 60px; }
-section + section { border-top: 1px solid var(--border); }
-.s-tag { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 4px; color: var(--green); text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
-.s-tag::after { content: ''; flex: 1; height: 1px; background: var(--border); max-width: 60px; }
-h2 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(40px, 5vw, 68px); color: var(--black); letter-spacing: 1px; line-height: 1; margin-bottom: 24px; }
-.lead { font-size: 17px; line-height: 1.8; color: #444; max-width: 700px; margin-bottom: 40px; }
-
-/* PRIORITY STACK */
-.priority-stack { display: flex; flex-direction: column; gap: 3px; }
-.priority-item {
-  display: grid; grid-template-columns: 60px 1fr auto;
-  align-items: center; gap: 24px;
-  padding: 24px 28px;
-  background: var(--black); color: #fff;
-  transition: background .2s;
-  cursor: default;
-}
-.priority-item:hover { background: #1a1a18; }
-.priority-item.today { background: var(--green); }
-.priority-item.today:hover { background: #3a9a50; }
-.p-num { font-family: 'Bebas Neue', sans-serif; font-size: 42px; color: #ffffff20; line-height: 1; }
-.priority-item.today .p-num { color: #ffffff50; }
-.p-body h3 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
-.p-body p { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #aaa; line-height: 1.6; }
-.priority-item.today .p-body p { color: #d0f0d8; }
-.p-badge { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 2px; padding: 4px 10px; border: 1px solid #ffffff20; color: #aaa; white-space: nowrap; }
-.priority-item.today .p-badge { border-color: #ffffff50; color: #fff; }
-
-/* BRAND BLOCK */
-.brand-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2px; background: var(--border); margin-top: 32px; }
-.brand-opt { background: var(--offwhite); padding: 32px 24px; transition: background .2s; cursor: pointer; }
-.brand-opt:hover { background: #fff; }
-.brand-opt.pick { background: var(--black); color: #fff; }
-.brand-opt .b-name { font-family: 'Bebas Neue', sans-serif; font-size: 32px; letter-spacing: 1px; color: var(--green-vivid); }
-.brand-opt.pick .b-name { color: var(--green-vivid); }
-.brand-opt .b-tag { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 2px; color: var(--grey); margin-top: 6px; text-transform: uppercase; }
-.brand-opt p { font-size: 13px; color: #666; line-height: 1.6; margin-top: 10px; }
-.brand-opt.pick p { color: #aaa; }
-.pick-badge { display: inline-block; background: var(--green-vivid); color: var(--black); font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 2px; padding: 3px 8px; margin-top: 12px; text-transform: uppercase; }
-
-/* FLOW DIAGRAM */
-.flow { display: flex; align-items: flex-start; gap: 0; margin-top: 40px; flex-wrap: wrap; }
-.flow-step { flex: 1; min-width: 140px; }
-.flow-box {
-  background: #fff; border: 1px solid var(--border);
-  padding: 20px; text-align: center;
-  transition: border-color .2s, transform .2s;
-}
-.flow-box:hover { border-color: var(--green); transform: translateY(-4px); }
-.flow-box .f-icon { font-size: 28px; margin-bottom: 10px; display: block; }
-.flow-box h4 { font-size: 13px; font-weight: 600; color: var(--black); margin-bottom: 4px; }
-.flow-box p { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--grey); line-height: 1.5; }
-.flow-arrow { display: flex; align-items: center; padding: 0 8px; padding-top: 24px; color: var(--green); font-size: 20px; }
-
-/* TIMELINE GRID */
-.timeline-grid { display: grid; grid-template-columns: 140px 1fr; gap: 0; margin-top: 32px; }
-.tg-label {
-  background: var(--black); color: var(--green-vivid);
-  font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 1px;
-  display: flex; align-items: center; justify-content: center;
-  padding: 28px 16px; border-bottom: 2px solid var(--offwhite);
-  writing-mode: horizontal-tb; text-align: center; line-height: 1.2;
-}
-.tg-content { padding: 24px 32px; border-bottom: 1px solid var(--border); }
-.tg-content h3 { font-size: 17px; font-weight: 600; color: var(--black); margin-bottom: 8px; }
-.tg-content ul { padding-left: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 8px; }
-.tg-content ul li {
-  font-family: 'IBM Plex Mono', monospace; font-size: 11px;
-  background: #fff; border: 1px solid var(--border); padding: 4px 12px;
-  color: var(--black);
-}
-.tg-content ul li.done { background: var(--green-pale); border-color: var(--green); color: var(--green); }
-
-/* LEAD SOURCES */
-.lead-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin-top: 32px; }
-.lead-card { background: #fff; border: 1px solid var(--border); padding: 28px; position: relative; overflow: hidden; transition: box-shadow .2s; }
-.lead-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,.08); }
-.lead-card .lc-speed { position: absolute; top: 20px; right: 20px; font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 2px; padding: 3px 8px; background: var(--green-pale); color: var(--green); }
-.lead-card .lc-speed.fast { background: #fff3cd; color: #856404; }
-.lead-card .lc-speed.now { background: #f8d7da; color: var(--red); }
-.lead-card h4 { font-size: 15px; font-weight: 600; margin-bottom: 8px; margin-top: 4px; }
-.lead-card p { font-size: 13px; color: #555; line-height: 1.65; }
-.lead-card .incentive { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--gold); margin-top: 12px; }
-
-/* CRM TABLE */
-.crm-table { width: 100%; border-collapse: collapse; margin-top: 32px; font-size: 13px; }
-.crm-table th { background: var(--black); color: var(--green-vivid); font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 2px; padding: 14px 18px; text-align: left; border-right: 1px solid #333; }
-.crm-table td { padding: 14px 18px; border: 1px solid var(--border); vertical-align: top; line-height: 1.6; }
-.crm-table tr:hover td { background: #fff; }
-.crm-table .stage { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--green); font-weight: 700; }
-
-/* ROLES TABLE */
-.roles-table { width: 100%; border-collapse: collapse; margin-top: 32px; }
-.roles-table th { background: var(--green); color: #fff; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 2px; padding: 14px 20px; text-align: left; }
-.roles-table td { padding: 16px 20px; border-bottom: 1px solid var(--border); font-size: 14px; vertical-align: top; }
-.roles-table tr:hover td { background: #fafaf8; }
-.role-title { font-family: 'Bebas Neue', sans-serif; font-size: 18px; color: var(--green); letter-spacing: 1px; }
-
-/* WHATSAPP BOX */
-.wa-box { background: var(--black); border-left: 4px solid #25d366; padding: 40px; margin-top: 32px; position: relative; }
-.wa-box::before { content: '💬'; font-size: 32px; position: absolute; top: 24px; right: 32px; }
-.wa-box h3 { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: #25d366; margin-bottom: 8px; letter-spacing: 1px; }
-.wa-box .wa-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 3px; color: #888; text-transform: uppercase; margin-bottom: 24px; }
-.wa-message { background: #1a1a18; border: 1px solid #333; padding: 28px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #ccc; line-height: 1.9; white-space: pre-wrap; }
-.wa-message strong { color: #25d366; }
-
-/* COMPENSATION */
-.comp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2px; background: var(--border); margin-top: 32px; }
-.comp-item { background: #fff; padding: 32px; }
-.comp-item h4 { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--black); letter-spacing: 1px; margin-bottom: 8px; }
-.comp-item .amount { font-family: 'Bebas Neue', sans-serif; font-size: 44px; color: var(--green); letter-spacing: 1px; }
-.comp-item .period { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--grey); margin-bottom: 12px; }
-.comp-item p { font-size: 13px; color: #666; line-height: 1.6; }
-
-/* FOOTER */
-footer { background: var(--black); padding: 48px 60px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
-footer p { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #555; }
-footer span { color: var(--green-vivid); }
-
-@media (max-width: 640px) {
-  section { padding: 60px 24px; }
-  .hero { padding: 60px 24px; }
-  footer { padding: 40px 24px; }
-  nav { padding: 0 24px; }
-  .flow-arrow { display: none; }
-  .timeline-grid { grid-template-columns: 1fr; }
-  .tg-label { writing-mode: horizontal-tb; }
+@media (max-width: 620px) {
+  .card-grid-3, .card-grid-4, .card-grid-2, .tier-grid, .kpi-grid { grid-template-columns: 1fr; }
+  .nav-bar { padding: 0 20px; }
+  .toc-grid { grid-template-columns: 1fr; }
+  .expansion-phases { grid-template-columns: 1fr; }
 }
 </style>
 </head>
 <body>
 
-<nav>
-  <div class="nav-logo">PrimeTurf</div>
-  <ul class="nav-links">
-    <li><a href="#priorities">Priorities</a></li>
-    <li><a href="#brand">Brand</a></li>
-    <li><a href="#leads">Leads</a></li>
-    <li><a href="#crm">CRM</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#team">Team</a></li>
-    <li><a href="#whatsapp">WhatsApp</a></li>
-  </ul>
-</nav>
-
-<!-- HERO -->
-<div class="hero">
-  <p class="hero-tag">Master Launch Blueprint · Gauteng · May 2026</p>
-  <h1>From Zero<br><em>To Market Leader.</em></h1>
-  <p class="hero-sub">A complete ground-up launch system for PrimeTurf — brand, leads, CRM, operations, and the WhatsApp group message that starts it all. One team, one area, one focused machine.</p>
-  <div class="hero-people">
-    <div class="person">
-      <div class="role">Owner & Director</div>
-      <div class="name">Leon van Eeden</div>
-      <div class="title">Commercial Lead · Operations</div>
+<!-- ════════════════════════════════
+     COVER
+════════════════════════════════ -->
+<div class="cover">
+  <div class="cover-bg"></div>
+  <div class="cover-lines"></div>
+  <div class="cover-inner">
+    <div class="doc-badge">Document 02 · Master Blueprint · Operational Source of Truth</div>
+    <div class="cover-monogram">
+      <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+        <text x="4" y="46" font-family="Cinzel, serif" font-size="38" font-weight="700" fill="#C8953A">P</text>
+        <text x="28" y="46" font-family="Cinzel, serif" font-size="38" font-weight="700" fill="#F5F2EC">T</text>
+        <path d="M18 28 Q16 18 14 12" stroke="#4CAF65" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <path d="M20 28 Q20 16 20 10" stroke="#4CAF65" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <path d="M22 28 Q24 18 26 12" stroke="#4CAF65" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      </svg>
     </div>
-    <div class="person">
-      <div class="role">Owner & Director</div>
-      <div class="name">Mechanne van Eeden</div>
-      <div class="title">Client Experience · Visual Content · Admin</div>
-    </div>
-    <div class="person">
-      <div class="role">Head of Growth</div>
-      <div class="name">Stiaan du Plessis</div>
-      <div class="title">Digital Strategy · Lead Generation · Brand</div>
+    <div class="cover-title"><span>Prime</span><span class="turf">Turf</span></div>
+    <div class="cover-subtitle">Master Blueprint · Operational Architecture</div>
+    <div class="cover-tagline">Launch · Growth · Regional Expansion</div>
+    <div class="cover-divider"></div>
+    <div class="cover-meta">Pretoria East · Premium Outdoor Transformation · South Africa</div>
+    <div class="cover-doc-info">
+      <span>Version <strong>1.0</strong></span>
+      <span>Sections <strong>31</strong></span>
+      <span>Classification <strong>Founders Only</strong></span>
+      <span>Approved by <strong>Leon van Eeden</strong></span>
     </div>
   </div>
 </div>
 
-<!-- PRIORITIES -->
-<section id="priorities">
-  <p class="s-tag">Step 1</p>
-  <h2>What We Do First.</h2>
-  <p class="lead">In order. No skipping. The foundation determines everything that comes after it. Here is exactly where to focus — starting today.</p>
-  <div class="priority-stack">
-    <div class="priority-item today">
-      <div class="p-num">1</div>
-      <div class="p-body">
-        <h3>Lock the Brand Name & Identity</h3>
-        <p>PrimeTurf vs Festirex vs other. Decision needed TODAY. Everything — domain, GMB, social handles, logo — blocks on this. Top recommendation: PrimeTurf (premium, clear, national-scalable).</p>
-      </div>
-      <div class="p-badge">TODAY</div>
-    </div>
-    <div class="priority-item today">
-      <div class="p-num">2</div>
-      <div class="p-body">
-        <h3>Launch the WhatsApp Group — With a Clear Directive</h3>
-        <p>Get the founding team in one place. Leon, Mechanne, Stiaan, and any installer/agent leads. Use the message template in this document. Foundation laid in minutes.</p>
-      </div>
-      <div class="p-badge">TODAY</div>
-    </div>
-    <div class="priority-item">
-      <div class="p-num">3</div>
-      <div class="p-body">
-        <h3>Register Domain + Social Handles</h3>
-        <p>primeturf.co.za · primturf.co.za · @PrimeTurfSA. Under R200 total. Needs to happen within 24 hours of brand decision or someone else takes it.</p>
-      </div>
-      <div class="p-badge">24 HRS</div>
-    </div>
-    <div class="priority-item">
-      <div class="p-num">4</div>
-      <div class="p-body">
-        <h3>Logo & Visual Identity</h3>
-        <p>Simple, clean, premium. Dark green + white + gold accent. Wordmark style. Needed for business cards, WhatsApp profile, social headers, and the website. Can be done in 48 hours.</p>
-      </div>
-      <div class="p-badge">48 HRS</div>
-    </div>
-    <div class="priority-item">
-      <div class="p-num">5</div>
-      <div class="p-body">
-        <h3>Google Business Profile — Gauteng</h3>
-        <p>Set up GMB for PrimeTurf in the first target area (Sandton / Randburg / Fourways — TBD). This is the single highest-leverage action for local search leads. Free. Fast. Critical.</p>
-      </div>
-      <div class="p-badge">DAY 3</div>
-    </div>
-    <div class="priority-item">
-      <div class="p-num">6</div>
-      <div class="p-body">
-        <h3>One-Page Lead Capture Website</h3>
-        <p>Single beautiful page: hero, services, before/after gallery, quote form → WhatsApp redirect. Fast to build, fast to rank. Mobile-first. SEO foundations baked in from day 1.</p>
-      </div>
-      <div class="p-badge">WEEK 1</div>
-    </div>
-    <div class="priority-item">
-      <div class="p-num">7</div>
-      <div class="p-body">
-        <h3>Bakkie Brigade / Direct Sales Launch</h3>
-        <p>Identify 3–5 local handymen, drivers, garden services in the target area. Brief them. Give them cards + WhatsApp link + commission structure. This generates leads while the SEO is still loading.</p>
-      </div>
-      <div class="p-badge">WEEK 1</div>
-    </div>
-    <div class="priority-item">
-      <div class="p-num">8</div>
-      <div class="p-body">
-        <h3>Facebook Group Rebrand (27,000 Members)</h3>
-        <p>Rename the existing 27,000-member group to PrimeTurf Gauteng or similar. Update description, banner, pinned post. Immediate audience for before/afters, referral campaigns, and lead capture.</p>
-      </div>
-      <div class="p-badge">WEEK 1</div>
-    </div>
-    <div class="priority-item">
-      <div class="p-num">9</div>
-      <div class="p-body">
-        <h3>CRM & Lead Pipeline Setup</h3>
-        <p>One master database. Every lead logged: source, contact, status, Mechanne's photo/mockup, follow-up date. Free tools to start (Google Sheets → Trello/Notion → proper CRM at scale).</p>
-      </div>
-      <div class="p-badge">WEEK 2</div>
-    </div>
-    <div class="priority-item">
-      <div class="p-num">10</div>
-      <div class="p-body">
-        <h3>Full Website + Area SEO Expansion</h3>
-        <p>Multi-page site with separate pages per Gauteng suburb. Start ranking for "artificial grass Sandton", "artificial grass Fourways", etc. Each page = a new lead pipeline.</p>
-      </div>
-      <div class="p-badge">MONTH 1–2</div>
-    </div>
-  </div>
-</section>
+<!-- ════ STICKY NAV ════ -->
+<div class="nav-bar">
+  <div class="nav-logo">Prime<span>Turf</span></div>
+  <div class="nav-doc">Master Blueprint · Doc 02</div>
+</div>
 
-<!-- BRAND -->
-<section id="brand">
-  <p class="s-tag">Brand Identity</p>
-  <h2>The Name Decides Everything.</h2>
-  <p class="lead">Brand name drives domain, logo, GMB handle, social media, SEO, and the feeling people get before they even see your work. Choose once. Choose well.</p>
-  <div class="brand-options">
-    <div class="brand-opt pick">
-      <div class="b-name">PrimeTurf</div>
-      <div class="b-tag">Top Recommendation</div>
-      <p>Premium, professional, instantly clear. "Prime" signals quality. "Turf" is searchable. Works nationally. Easy to trademark. Available domains likely clear.</p>
-      <span class="pick-badge">Stefan's Choice ✓</span>
+<!-- ════ TABLE OF CONTENTS ════ -->
+<div class="toc">
+  <div class="toc-label">Contents · 31 Sections</div>
+  <div class="toc-grid">
+    <a href="#s01" class="toc-item"><span class="toc-num">01</span><span class="toc-name">Executive Summary</span></a>
+    <a href="#s02" class="toc-item"><span class="toc-num">02</span><span class="toc-name">Company Vision</span></a>
+    <a href="#s03" class="toc-item"><span class="toc-num">03</span><span class="toc-name">Leadership Structure</span></a>
+    <a href="#s04" class="toc-item"><span class="toc-num">04</span><span class="toc-name">Authority Matrix</span></a>
+    <a href="#s05" class="toc-item"><span class="toc-num">05</span><span class="toc-name">Target Market</span></a>
+    <a href="#s06" class="toc-item"><span class="toc-num">06</span><span class="toc-name">Pretoria East Rollout Strategy</span></a>
+    <a href="#s07" class="toc-item"><span class="toc-num">07</span><span class="toc-name">Service Offering</span></a>
+    <a href="#s08" class="toc-item"><span class="toc-num">08</span><span class="toc-name">Customer Journey</span></a>
+    <a href="#s09" class="toc-item"><span class="toc-num">09</span><span class="toc-name">Lead Management System</span></a>
+    <a href="#s10" class="toc-item"><span class="toc-num">10</span><span class="toc-name">Sales Process</span></a>
+    <a href="#s11" class="toc-item"><span class="toc-num">11</span><span class="toc-name">Estimation & Quoting System</span></a>
+    <a href="#s12" class="toc-item"><span class="toc-num">12</span><span class="toc-name">Installation Workflow</span></a>
+    <a href="#s13" class="toc-item"><span class="toc-num">13</span><span class="toc-name">Quality Control Standards</span></a>
+    <a href="#s14" class="toc-item"><span class="toc-num">14</span><span class="toc-name">Client Communication Framework</span></a>
+    <a href="#s15" class="toc-item"><span class="toc-num">15</span><span class="toc-name">Referral System</span></a>
+    <a href="#s16" class="toc-item"><span class="toc-num">16</span><span class="toc-name">Google Business Strategy</span></a>
+    <a href="#s17" class="toc-item"><span class="toc-num">17</span><span class="toc-name">SEO Strategy</span></a>
+    <a href="#s18" class="toc-item"><span class="toc-num">18</span><span class="toc-name">Content Engine</span></a>
+    <a href="#s19" class="toc-item"><span class="toc-num">19</span><span class="toc-name">Social Media Strategy</span></a>
+    <a href="#s20" class="toc-item"><span class="toc-num">20</span><span class="toc-name">Before & After Campaign System</span></a>
+    <a href="#s21" class="toc-item"><span class="toc-num">21</span><span class="toc-name">Review Acquisition System</span></a>
+    <a href="#s22" class="toc-item"><span class="toc-num">22</span><span class="toc-name">Operational Infrastructure</span></a>
+    <a href="#s23" class="toc-item"><span class="toc-num">23</span><span class="toc-name">Team Growth Plan</span></a>
+    <a href="#s24" class="toc-item"><span class="toc-num">24</span><span class="toc-name">Area Expansion Framework</span></a>
+    <a href="#s25" class="toc-item"><span class="toc-num">25</span><span class="toc-name">Technology Stack</span></a>
+    <a href="#s26" class="toc-item"><span class="toc-num">26</span><span class="toc-name">KPI Dashboard</span></a>
+    <a href="#s27" class="toc-item"><span class="toc-num">27</span><span class="toc-name">Risk Management</span></a>
+    <a href="#s28" class="toc-item"><span class="toc-num">28</span><span class="toc-name">Aligned Incentives & Shared Upside</span></a>
+    <a href="#s29" class="toc-item"><span class="toc-num">29</span><span class="toc-name">Future Growth Opportunities</span></a>
+    <a href="#s30" class="toc-item"><span class="toc-num">30</span><span class="toc-name">5-Year Expansion Roadmap</span></a>
+    <a href="#s31" class="toc-item"><span class="toc-num">31</span><span class="toc-name">Closing Founder Vision</span></a>
+  </div>
+</div>
+
+<div class="h-rule"></div>
+
+<!-- ════════════════════════════════
+     01 · EXECUTIVE SUMMARY
+════════════════════════════════ -->
+<div id="s01" style="background:var(--midnight)">
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <h2 class="section-title">Executive Summary</h2>
+    <div class="section-rule"></div>
+    <span class="section-badge">Founders · Confidential</span>
+  </div>
+  <p class="italic-lead">PrimeTurf is a premium outdoor transformation company targeting Pretoria East's high-income residential and commercial segment. This blueprint is the operating system for building, scaling, and eventually franchising the PrimeTurf model.</p>
+
+  <div class="card-grid-3" style="margin-bottom:2px">
+    <div class="card card-forest">
+      <div class="card-label">The Opportunity</div>
+      <div class="card-title">Underserved Premium Segment</div>
+      <div class="card-body">Pretoria East hosts some of South Africa's wealthiest residential estates, yet lacks a consistently premium outdoor transformation brand. Most incumbents compete on price. PrimeTurf competes on experience and standard.</div>
     </div>
-    <div class="brand-opt">
-      <div class="b-name">Festirex</div>
-      <div class="b-tag">Existing Entity Option</div>
-      <p>Unique, ownable, brandable. Works if registering under existing company. Less obvious = requires more brand-building, but stronger long-term identity.</p>
+    <div class="card card-forest">
+      <div class="card-label">The Model</div>
+      <div class="card-title">Systems Before Scale</div>
+      <div class="card-body">Dominate a defined geographic territory first. Install the full operational infrastructure — sales, delivery, digital, referral — before expanding. Build once. Deploy repeatedly.</div>
     </div>
-    <div class="brand-opt">
-      <div class="b-name">VividTurf</div>
-      <div class="b-tag">Alternative</div>
-      <p>Vivid = colour, life, vibrancy. Differentiates from every competitor. Strong for social media and content marketing. Memorable and visual.</p>
-    </div>
-    <div class="brand-opt">
-      <div class="b-name">EverGreen</div>
-      <div class="b-tag">Benefit-Driven</div>
-      <p>The promise is in the name. No mowing, no watering, always green. Emotional benefit clear from first contact. Works well for residential market.</p>
+    <div class="card card-forest">
+      <div class="card-label">The Advantage</div>
+      <div class="card-title">Brand as Moat</div>
+      <div class="card-body">A premium brand built from the first day creates a compounding competitive barrier. Clients in estates talk. A recognised PrimeTurf vehicle in the driveway does more marketing than any paid ad.</div>
     </div>
   </div>
 
-  <div style="margin-top:40px; background:#fff; border:1px solid var(--border); padding:32px;">
-    <p class="s-tag">Colour Direction</p>
-    <div style="display:flex; gap:16px; margin-top:16px; flex-wrap:wrap;">
-      <div style="text-align:center;">
-        <div style="width:80px;height:80px;background:#1a3a2a;border-radius:4px;margin:0 auto 8px;"></div>
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#888;">Deep Forest<br>#1A3A2A · Primary</span>
-      </div>
-      <div style="text-align:center;">
-        <div style="width:80px;height:80px;background:#4caf65;border-radius:4px;margin:0 auto 8px;"></div>
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#888;">Vivid Green<br>#4CAF65 · Accent</span>
-      </div>
-      <div style="text-align:center;">
-        <div style="width:80px;height:80px;background:#c8953a;border-radius:4px;margin:0 auto 8px;"></div>
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#888;">Harvest Gold<br>#C8953A · Premium</span>
-      </div>
-      <div style="text-align:center;">
-        <div style="width:80px;height:80px;background:#f5f2ec;border:1px solid #ddd;border-radius:4px;margin:0 auto 8px;"></div>
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#888;">Warm White<br>#F5F2EC · Background</span>
-      </div>
-      <div style="text-align:center;">
-        <div style="width:80px;height:80px;background:#0d0d0b;border-radius:4px;margin:0 auto 8px;"></div>
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#888;">Midnight<br>#0D0D0B · Text</span>
-      </div>
+  <div class="kpi-grid" style="margin-top:2px">
+    <div class="kpi-card">
+      <div class="kpi-label">Primary Territory</div>
+      <div class="kpi-value" style="font-size:28px">Pretoria<span> East</span></div>
+      <div class="kpi-sub">Phase 1 Domination Zone</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Market Focus</div>
+      <div class="kpi-value" style="font-size:28px">3 <span>Segments</span></div>
+      <div class="kpi-sub">Residential · Estate · Commercial</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Vision Horizon</div>
+      <div class="kpi-value"><span>5</span> yr</div>
+      <div class="kpi-sub">National brand recognition</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Founding Team</div>
+      <div class="kpi-value"><span>4</span></div>
+      <div class="kpi-sub">Lean. Expert. Complementary.</div>
     </div>
   </div>
-</section>
+</div>
+</div>
 
-<!-- LEAD FLOW -->
-<section style="background:#0d0d0b; padding:80px 60px;">
-  <p class="s-tag" style="color:#4caf65;"><span style="background:#4caf65;height:1px;width:32px;display:inline-block;margin-right:10px;vertical-align:middle;"></span>Lead Flow</p>
-  <h2 style="color:#fff;">One Pipeline.<br>Nothing Lost.</h2>
-  <p class="lead" style="color:#888;">Every lead — from wherever it comes — flows to one place. Mechanne receives it, sends the mockup, logs it, books the site visit. Nothing falls through the cracks.</p>
-  <div class="flow">
-    <div class="flow-step">
-      <div class="flow-box">
-        <span class="f-icon">📱</span>
-        <h4>Lead Source</h4>
-        <p>Google, Facebook, bakkie brigade, referral, social, agent</p>
-      </div>
+<div class="h-rule"></div>
+
+<!-- ════════════════════════════════
+     02 · COMPANY VISION
+════════════════════════════════ -->
+<div id="s02" style="background:var(--section-alt)">
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <h2 class="section-title">Company Vision</h2>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="principle-block" style="margin-bottom:48px">
+    <div class="principle-text">"PrimeTurf becomes one of South Africa's most recognised premium outdoor transformation brands — operating through multiple regional territories with standardised systems, strong brand recognition, and industry-leading client experience."</div>
+    <div class="principle-attr">Five-Year Vision · PrimeTurf Founders</div>
+  </div>
+
+  <div class="card-grid-4">
+    <div class="card">
+      <div class="card-num">01</div>
+      <div class="card-label">Mission</div>
+      <div class="card-title">Dominate First</div>
+      <div class="card-body">Own Pretoria East at the premium tier before considering any expansion. Depth over breadth, always.</div>
     </div>
-    <div class="flow-arrow">→</div>
-    <div class="flow-step">
-      <div class="flow-box">
-        <span class="f-icon">💬</span>
-        <h4>One WhatsApp Number</h4>
-        <p>All enquiries land here. Automated greeting sent instantly.</p>
-      </div>
+    <div class="card">
+      <div class="card-num">02</div>
+      <div class="card-label">Method</div>
+      <div class="card-title">Systems First</div>
+      <div class="card-body">Every system — sales, delivery, digital, referral — is built and proven before the next territory opens.</div>
     </div>
-    <div class="flow-arrow">→</div>
-    <div class="flow-step">
-      <div class="flow-box">
-        <span class="f-icon">📸</span>
-        <h4>Mechanne: Photo Request</h4>
-        <p>"Send us a photo of your current lawn — we'll show you what it looks like after."</p>
-      </div>
+    <div class="card">
+      <div class="card-num">03</div>
+      <div class="card-label">Standard</div>
+      <div class="card-title">No Compromise</div>
+      <div class="card-body">Every installation, every communication, every vehicle appearance reflects the same premium standard.</div>
     </div>
-    <div class="flow-arrow">→</div>
-    <div class="flow-step">
-      <div class="flow-box">
-        <span class="f-icon">🖼️</span>
-        <h4>Mockup Sent</h4>
-        <p>Before & after visual. Personalised. Closes the emotional gap instantly.</p>
-      </div>
-    </div>
-    <div class="flow-arrow">→</div>
-    <div class="flow-step">
-      <div class="flow-box">
-        <span class="f-icon">📋</span>
-        <h4>CRM Logged</h4>
-        <p>Name, area, m², source, status, follow-up date entered in master DB.</p>
-      </div>
-    </div>
-    <div class="flow-arrow">→</div>
-    <div class="flow-step">
-      <div class="flow-box">
-        <span class="f-icon">🏡</span>
-        <h4>Site Visit → Quote → Close</h4>
-        <p>Leon books, team installs, review collected, referral loop starts.</p>
-      </div>
+    <div class="card">
+      <div class="card-num">04</div>
+      <div class="card-label">Growth</div>
+      <div class="card-title">Repeatable Model</div>
+      <div class="card-body">The Pretoria East playbook is engineered to be replicated in new territories with minimal friction.</div>
     </div>
   </div>
-</section>
+</div>
+</div>
 
-<!-- LEAD SOURCES -->
-<section id="leads">
-  <p class="s-tag">Lead Generation</p>
-  <h2>Every Channel.<br>Every Angle.</h2>
-  <p class="lead">While SEO builds over 90 days, these channels generate leads NOW. Stacked together they create an unstoppable pipeline.</p>
-  <div class="lead-grid">
-    <div class="lead-card">
-      <span class="lc-speed now">RIGHT NOW</span>
-      <h4>🚗 Bakkie Brigade</h4>
-      <p>Identify 5 local handymen, garden services, hardware store owners in target area. Give them PrimeTurf flyers + WhatsApp link. They refer, they earn.</p>
-      <div class="incentive">R500 per closed lead · easy conversation starter</div>
+<div class="h-rule"></div>
+
+<!-- ════════════════════════════════
+     03 · LEADERSHIP STRUCTURE
+════════════════════════════════ -->
+<div id="s03" style="background:var(--midnight)">
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <h2 class="section-title">Leadership Structure</h2>
+    <div class="section-rule"></div>
+  </div>
+  <p class="italic-lead">A lean founding team with clearly defined domains. No overlap. No ambiguity. Every role owns its territory.</p>
+
+  <div class="card-grid-4" style="margin-bottom:40px">
+    <div class="card card-forest" style="border-color:rgba(200,149,58,0.3)">
+      <div class="card-label">Managing Director</div>
+      <div class="card-title">Leon van Eeden</div>
+      <div class="card-body">Overall business direction and final approval authority. Client relationship stewardship at the executive level. P&L ownership. Vision holder.</div>
+      <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(200,149,58,0.1)">
+        <div class="small-caps">Final Approvals</div>
+      </div>
     </div>
-    <div class="lead-card">
-      <span class="lc-speed now">RIGHT NOW</span>
-      <h4>🃏 Tactical Business Cards</h4>
-      <p>Guinness-style cards with embedded real turf sample. People cannot put them down. Conversation opens itself. Distribute at hardware stores, estate offices, schools.</p>
-      <div class="incentive">Unique, tactile, unforgettable — no competitor does this</div>
+    <div class="card">
+      <div class="card-label">Client Experience & Admin</div>
+      <div class="card-title">Mechanne van Eeden</div>
+      <div class="card-body">Client onboarding, communication, and satisfaction. Administrative infrastructure. Quote documentation and scheduling coordination.</div>
     </div>
-    <div class="lead-card">
-      <span class="lc-speed now">RIGHT NOW</span>
-      <h4>👥 Facebook Group (27k Members)</h4>
-      <p>Rebrand Stiaan's existing 27,000-member group. Post before/afters, testimonials, referral offers. Pinned post with WhatsApp lead link. Instant audience, zero cost.</p>
-      <div class="incentive">27,000 people · no ad spend needed · rebrand this week</div>
+    <div class="card">
+      <div class="card-label">Operations & Installations</div>
+      <div class="card-title">Stefan</div>
+      <div class="card-body">On-the-ground delivery excellence. Installation quality control. Team coordination. Site supervision and material management.</div>
     </div>
-    <div class="lead-card">
-      <span class="lc-speed fast">THIS WEEK</span>
-      <h4>🤝 Referral / Affiliate Programme</h4>
-      <p>Anyone who refers a closed job earns R500–R1,500 depending on size. Share a WhatsApp link. Link tracks the referral. Works on WhatsApp, Facebook, Instagram, word of mouth.</p>
-      <div class="incentive">5% residential · 2.5% commercial/schools · scales itself</div>
-    </div>
-    <div class="lead-card">
-      <span class="lc-speed fast">THIS WEEK</span>
-      <h4>📱 TikTok / Reels Content</h4>
-      <p>"The Lawn Thief" and 4 other viral scripts are ready to film. Post first video this week. Pattern interrupt hooks. No grass mentioned for first 8 seconds. 100% organic reach possible.</p>
-      <div class="incentive">5 scripts ready · film with phone · zero production cost</div>
-    </div>
-    <div class="lead-card">
-      <span class="lc-speed fast">THIS WEEK</span>
-      <h4>🏘️ Door-to-Door Hangers</h4>
-      <p>Premium door hangers with real vs fake turf comparison strips attached. Drop in estates and suburban streets in target area. "Touch it. Now imagine your whole lawn."</p>
-      <div class="incentive">Physical + tactile = highest attention rate in the street</div>
-    </div>
-    <div class="lead-card">
-      <span class="lc-speed">WEEK 2</span>
-      <h4>🗺️ Google Business Profile</h4>
-      <p>Once live, this is the highest-converting free channel. Local searches, Google Maps placement, reviews. Every 5-star review = 3% more clicks. Target: 10 reviews in first 30 days.</p>
-      <div class="incentive">Free · permanent · compounds over time</div>
-    </div>
-    <div class="lead-card">
-      <span class="lc-speed">WEEK 2</span>
-      <h4>🏫 School Outreach</h4>
-      <p>Direct emails and calls to school business managers in target area. Average project R200k–R1M. One school job = 6 months of residential revenue. Have the school pamphlet ready.</p>
-      <div class="incentive">High value · low competition · relationship-based sales</div>
-    </div>
-    <div class="lead-card">
-      <span class="lc-speed">MONTH 1</span>
-      <h4>🛒 Shopping Mall Activations</h4>
-      <p>Pop-up display in a Sandton/Fourways mall. Tactile display board, mini putting green, quote form on iPad. Stefan's target: 5 qualified leads per activation day.</p>
-      <div class="incentive">High foot traffic · immediate lead collection · brand visibility</div>
+    <div class="card">
+      <div class="card-label">Growth, Brand & Digital</div>
+      <div class="card-title">Stiaan du Plessis</div>
+      <div class="card-body">Growth strategy, brand development, and digital infrastructure. SEO, content, social, lead systems, and all digital touchpoints. This document.</div>
     </div>
   </div>
-</section>
 
-<!-- CRM -->
-<section id="crm">
-  <p class="s-tag">CRM & Lead Pipeline</p>
-  <h2>Every Lead.<br>Tracked. Owned.</h2>
-  <p class="lead">Mechanne owns the pipeline. Every single enquiry gets logged, actioned, and followed up. No lead dies from neglect. This is the system that turns leads into revenue.</p>
-  <table class="crm-table">
+  <div style="background:rgba(26,58,42,0.15);border:1px solid rgba(200,149,58,0.1);padding:32px 40px">
+    <div class="small-caps" style="margin-bottom:20px">Founding Principle</div>
+    <p style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;color:rgba(245,242,236,0.7);line-height:1.8">Each founder operates as the undisputed owner of their domain. Decisions within a domain are made independently. Decisions that cross domains require consensus. Decisions that affect the whole company require Leon's sign-off.</p>
+  </div>
+</div>
+</div>
+
+<div class="h-rule"></div>
+
+<!-- ════════════════════════════════
+     04 · AUTHORITY MATRIX
+════════════════════════════════ -->
+<div id="s04" style="background:var(--section-alt)">
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">04</span>
+    <h2 class="section-title">Authority Matrix</h2>
+    <div class="section-rule"></div>
+  </div>
+  <p class="italic-lead">Clarity removes friction. Every decision type is pre-assigned so execution never waits for approval.</p>
+
+  <div style="overflow-x:auto">
+  <table class="matrix-table" style="width:100%">
     <thead>
       <tr>
-        <th>STAGE</th>
-        <th>WHAT HAPPENS</th>
-        <th>WHO DOES IT</th>
-        <th>TOOL</th>
-        <th>NEXT ACTION</th>
+        <th style="text-align:left;min-width:220px">Decision Area</th>
+        <th>Leon</th>
+        <th>Mechanne</th>
+        <th>Stefan</th>
+        <th>Stiaan</th>
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <td><span class="stage">NEW LEAD</span></td>
-        <td>Enquiry arrives on WhatsApp / form / referral</td>
-        <td>Auto-responder → Mechanne</td>
-        <td>WhatsApp Business</td>
-        <td>Reply within 5 min. Ask for photo of lawn.</td>
-      </tr>
-      <tr>
-        <td><span class="stage">PHOTO RECEIVED</span></td>
-        <td>Client sends current lawn photo</td>
-        <td>Mechanne</td>
-        <td>WhatsApp + Canva</td>
-        <td>Create before/after mockup. Send back same day.</td>
-      </tr>
-      <tr>
-        <td><span class="stage">MOCKUP SENT</span></td>
-        <td>Personalised before/after image delivered</td>
-        <td>Mechanne</td>
-        <td>WhatsApp</td>
-        <td>Follow up in 2 hrs: "What do you think? Ready for a quote?"</td>
-      </tr>
-      <tr>
-        <td><span class="stage">QUOTE REQUESTED</span></td>
-        <td>Client wants a price / site visit</td>
-        <td>Leon</td>
-        <td>WhatsApp → Calendar</td>
-        <td>Book site visit within 48 hrs.</td>
-      </tr>
-      <tr>
-        <td><span class="stage">SITE VISIT DONE</span></td>
-        <td>Measurements taken, quote prepared</td>
-        <td>Leon + Mechanne</td>
-        <td>Quotation PDF (like QUO76)</td>
-        <td>Send quote same day. Follow up in 24 hrs.</td>
-      </tr>
-      <tr>
-        <td><span class="stage">QUOTE ACCEPTED</span></td>
-        <td>70% deposit received</td>
-        <td>Mechanne (admin)</td>
-        <td>Bank transfer → payment notification</td>
-        <td>Book installation date. Confirm with client.</td>
-      </tr>
-      <tr>
-        <td><span class="stage">INSTALLED</span></td>
-        <td>Job complete, photos taken</td>
-        <td>Installers + Stiaan (content)</td>
-        <td>Phone camera → gallery</td>
-        <td>Collect Google review. Post before/after. Ask for referral.</td>
-      </tr>
-      <tr>
-        <td><span class="stage">REVIEW & REFERRAL</span></td>
-        <td>5-star Google review + referral link shared</td>
-        <td>Mechanne</td>
-        <td>Google + WhatsApp</td>
-        <td>Log review. Tag in database. Add to testimonials.</td>
-      </tr>
+      <tr><td class="row-head">Final pricing approval</td><td class="owner">Owner</td><td class="consult">Consult</td><td class="inform">Inform</td><td class="consult">Consult</td></tr>
+      <tr><td class="row-head">Client contract sign-off</td><td class="owner">Owner</td><td class="consult">Consult</td><td class="inform">Inform</td><td class="inform">Inform</td></tr>
+      <tr><td class="row-head">Brand & digital decisions</td><td class="consult">Consult</td><td class="inform">Inform</td><td class="inform">Inform</td><td class="owner">Owner</td></tr>
+      <tr><td class="row-head">Installation scheduling</td><td class="inform">Inform</td><td class="consult">Consult</td><td class="owner">Owner</td><td class="inform">Inform</td></tr>
+      <tr><td class="row-head">Client communications</td><td class="inform">Inform</td><td class="owner">Owner</td><td class="consult">Consult</td><td class="consult">Consult</td></tr>
+      <tr><td class="row-head">Supplier relationships</td><td class="owner">Owner</td><td class="consult">Consult</td><td class="consult">Consult</td><td class="inform">Inform</td></tr>
+      <tr><td class="row-head">Digital content publishing</td><td class="inform">Inform</td><td class="inform">Inform</td><td class="inform">Inform</td><td class="owner">Owner</td></tr>
+      <tr><td class="row-head">Team hiring</td><td class="owner">Owner</td><td class="consult">Consult</td><td class="consult">Consult</td><td class="inform">Inform</td></tr>
+      <tr><td class="row-head">Quality sign-off on-site</td><td class="consult">Consult</td><td class="inform">Inform</td><td class="owner">Owner</td><td class="inform">Inform</td></tr>
+      <tr><td class="row-head">Strategic expansion decisions</td><td class="owner">Owner</td><td class="consult">Consult</td><td class="consult">Consult</td><td class="consult">Consult</td></tr>
     </tbody>
   </table>
-
-  <div style="margin-top:32px;background:#fff;border:1px solid var(--border);padding:32px;">
-    <p class="s-tag">Database Fields (Start Simple)</p>
-    <p style="font-size:14px;color:#666;margin-top:16px;line-height:1.8;">
-      Use Google Sheets initially. Columns: <strong>Date · Name · Phone · Area · Source (Google/Referral/Facebook/Agent) · m² Estimate · Stage · Mockup Sent (Y/N) · Quote Value · Deposit Paid · Install Date · Review (Y/N) · Notes</strong><br><br>
-      Graduate to Trello (visual pipeline) within 2 weeks. CRM software (HubSpot Free / Zoho CRM) when team grows beyond 3 people handling leads.
-    </p>
   </div>
-</section>
+  <div style="display:flex;gap:32px;margin-top:20px;flex-wrap:wrap">
+    <div style="display:flex;align-items:center;gap:8px"><div style="width:12px;height:12px;background:rgba(200,149,58,0.2)"></div><span style="font-size:11px;color:rgba(245,242,236,0.4);letter-spacing:0.1em">Owner — sole decision authority</span></div>
+    <div style="display:flex;align-items:center;gap:8px"><div style="width:12px;height:12px;background:rgba(76,175,101,0.2)"></div><span style="font-size:11px;color:rgba(245,242,236,0.4);letter-spacing:0.1em">Consult — input required</span></div>
+    <div style="display:flex;align-items:center;gap:8px"><div style="width:12px;height:12px;background:rgba(255,255,255,0.04)"></div><span style="font-size:11px;color:rgba(245,242,236,0.4);letter-spacing:0.1em">Inform — notified after decision</span></div>
+  </div>
+</div>
+</div>
 
-<!-- ROADMAP -->
-<section id="roadmap" style="background:var(--black);">
-  <p class="s-tag" style="color:#4caf65;"><span style="background:#4caf65;height:1px;width:32px;display:inline-block;margin-right:10px;vertical-align:middle;"></span>Roadmap</p>
-  <h2 style="color:#fff;">90 Days to<br>Market Leader.</h2>
-  <p class="lead" style="color:#888;">One area, one team, one relentless focus. This is how you dominate before expanding.</p>
-  <div class="timeline-grid">
-    <div class="tg-label" style="font-size:16px;">TODAY</div>
-    <div class="tg-content" style="background:#1a1a18;">
-      <h3 style="color:#fff;">Brand Decision + WhatsApp Group Launch</h3>
-      <ul>
-        <li class="done">Brand name confirmed: PrimeTurf</li>
-        <li class="done">WhatsApp group created + launch message sent</li>
-        <li>Target area selected (Sandton / Randburg / Fourways)</li>
-        <li>Leon & Mechanne formally onboarded</li>
-      </ul>
+<div class="h-rule"></div>
+
+<!-- ════════════════════════════════
+     05 · TARGET MARKET
+════════════════════════════════ -->
+<div id="s05" style="background:var(--midnight)">
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">05</span>
+    <h2 class="section-title">Target Market</h2>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="card-grid-3" style="margin-bottom:2px">
+    <div class="card card-forest">
+      <div class="card-label">Primary Segment</div>
+      <div class="card-title">Premium Residential</div>
+      <div class="card-body">Homeowners in Pretoria East suburbs — Waterkloof, Lynnwood, Faerie Glen, Moreleta Park, Garsfontein, Equestria. LSM 9–10. Dual income. Property-proud. Outdoor entertainment essential.</div>
+      <div style="margin-top:20px">
+        <div class="stat-bar-row"><div class="stat-bar-label">Revenue Weight</div><div class="stat-bar-track"><div class="stat-bar-fill" style="width:65%"></div></div><div class="stat-bar-val">65%</div></div>
+      </div>
     </div>
-    <div class="tg-label">DAY 1–3</div>
-    <div class="tg-content">
-      <h3>Foundation</h3>
-      <ul>
-        <li>Domain registered: primeturf.co.za</li>
-        <li>Social handles secured: @PrimeTurfSA</li>
-        <li>Logo design started</li>
-        <li>Facebook group rebranded (27k members)</li>
-        <li>WhatsApp Business number set up</li>
-      </ul>
+    <div class="card card-forest">
+      <div class="card-label">Secondary Segment</div>
+      <div class="card-title">Estate Complexes</div>
+      <div class="card-body">Gated communities, lifestyle estates, security villages. Body corporates and HOAs seeking consistent premium maintenance and transformation of shared spaces.</div>
+      <div style="margin-top:20px">
+        <div class="stat-bar-row"><div class="stat-bar-label">Revenue Weight</div><div class="stat-bar-track"><div class="stat-bar-fill" style="width:20%"></div></div><div class="stat-bar-val">20%</div></div>
+      </div>
     </div>
-    <div class="tg-label">WEEK 1</div>
-    <div class="tg-content">
-      <h3>Go Live</h3>
-      <ul>
-        <li>Logo finalised</li>
-        <li>One-page website live</li>
-        <li>Google Business Profile submitted</li>
-        <li>First social content posted (before/after photos)</li>
-        <li>Bakkie Brigade briefed (3–5 contacts)</li>
-        <li>Business cards with turf samples ordered</li>
-      </ul>
-    </div>
-    <div class="tg-label">WEEK 2–3</div>
-    <div class="tg-content">
-      <h3>First Leads</h3>
-      <ul>
-        <li>GMB verified and live on Maps</li>
-        <li>CRM Google Sheet operational</li>
-        <li>First viral video filmed and posted</li>
-        <li>Referral programme launched publicly</li>
-        <li>Door-to-door hangers distributed in target area</li>
-        <li>Target: 10 enquiries in week 2</li>
-      </ul>
-    </div>
-    <div class="tg-label">MONTH 1</div>
-    <div class="tg-content">
-      <h3>First Jobs</h3>
-      <ul>
-        <li>First installations completed</li>
-        <li>First Google reviews collected (target: 5)</li>
-        <li>Before/after gallery live on website</li>
-        <li>School outreach campaign started</li>
-        <li>Mall activation event planned</li>
-        <li>Target: 2,000m² booked/in pipeline</li>
-      </ul>
-    </div>
-    <div class="tg-label">MONTH 2–3</div>
-    <div class="tg-content">
-      <h3>Scale & Dominate</h3>
-      <ul>
-        <li>Ranking in top 3 for "[area] artificial grass"</li>
-        <li>Full multi-page website with suburb-specific pages</li>
-        <li>10+ Google reviews live</li>
-        <li>Second Gauteng area expansion started</li>
-        <li>First commercial/school job closed</li>
-        <li>Cape Town (ArtGrassPro → PrimeTurf) migration plan</li>
-      </ul>
+    <div class="card card-forest">
+      <div class="card-label">Growth Segment</div>
+      <div class="card-title">Commercial</div>
+      <div class="card-body">Premium office parks, boutique hotels, private schools, medical suites, corporate campuses requiring upscale outdoor environments that reflect brand prestige.</div>
+      <div style="margin-top:20px">
+        <div class="stat-bar-row"><div class="stat-bar-label">Revenue Weight</div><div class="stat-bar-track"><div class="stat-bar-fill" style="width:15%"></div></div><div class="stat-bar-val">15%</div></div>
+      </div>
     </div>
   </div>
-</section>
 
-<!-- TEAM & ROLES -->
-<section id="team">
-  <p class="s-tag">Team Structure</p>
-  <h2>Everyone Knows<br>Their Role.</h2>
-  <p class="lead">Small team. Clear lanes. No overlap. No confusion. This is the founding structure for PrimeTurf Gauteng.</p>
-  <table class="roles-table">
+  <div style="margin-top:2px;background:rgba(26,58,42,0.15);border:1px solid rgba(200,149,58,0.08);padding:40px">
+    <div class="small-caps" style="margin-bottom:24px">Client Profile · Premium Residential</div>
+    <div class="card-grid-4" style="gap:24px">
+      <div><div class="small-caps" style="margin-bottom:8px;font-size:9px">Age</div><p style="font-size:13px;color:rgba(245,242,236,0.6)">35–60 years. Established career. Owns property.</p></div>
+      <div><div class="small-caps" style="margin-bottom:8px;font-size:9px">Motivation</div><p style="font-size:13px;color:rgba(245,242,236,0.6)">Outdoor space as lifestyle extension. Status. Entertaining.</p></div>
+      <div><div class="small-caps" style="margin-bottom:8px;font-size:9px">Decision Mode</div><p style="font-size:13px;color:rgba(245,242,236,0.6)">Referral-driven. Researches before calling. Values trust over price.</p></div>
+      <div><div class="small-caps" style="margin-bottom:8px;font-size:9px">Communication</div><p style="font-size:13px;color:rgba(245,242,236,0.6)">WhatsApp first. Professional proposals expected. Responds to quality.</p></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="h-rule"></div>
+
+<!-- ════════════════════════════════
+     06 · PRETORIA EAST ROLLOUT
+════════════════════════════════ -->
+<div id="s06" style="background:var(--section-alt)">
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">06</span>
+    <h2 class="section-title">Pretoria East Rollout Strategy</h2>
+    <div class="section-rule"></div>
+  </div>
+  <p class="italic-lead">A phased, suburb-by-suburb domination strategy. Concentrated visibility before broad reach.</p>
+
+  <div class="process-flow" style="margin-bottom:48px">
+    <div class="process-step">
+      <div class="process-step-num">Phase 01</div>
+      <div class="process-step-title">Beachhead</div>
+      <div class="process-step-body">Identify 2–3 premium suburbs. Land 5–8 showcase installations. Prioritise visual-heavy, estate-facing properties.</div>
+    </div>
+    <div class="process-step">
+      <div class="process-step-num">Phase 02</div>
+      <div class="process-step-title">Visibility</div>
+      <div class="process-step-body">Google presence active. Before/after campaign live. Estate signage visible. Vehicle appearing regularly in target areas.</div>
+    </div>
+    <div class="process-step">
+      <div class="process-step-num">Phase 03</div>
+      <div class="process-step-title">Referral Engine</div>
+      <div class="process-step-body">Activate referral system with first clients. Neighbour leads. WhatsApp shares. First Google reviews posted.</div>
+    </div>
+    <div class="process-step">
+      <div class="process-step-num">Phase 04</div>
+      <div class="process-step-title">Suburb Lock</div>
+      <div class="process-step-body">10+ installs per suburb. Recognised brand presence. Waiting list for premium slots in top areas.</div>
+    </div>
+    <div class="process-step">
+      <div class="process-step-num">Phase 05</div>
+      <div class="process-step-title">Territory</div>
+      <div class="process-step-body">Full Pretoria East coverage. Enquiry volume exceeds capacity. Systems tested. Ready for expansion.</div>
+    </div>
+  </div>
+
+  <div class="card-grid-3">
+    <div class="card">
+      <div class="card-label">Priority Suburbs</div>
+      <div class="card-title">Beachhead Zones</div>
+      <div class="card-body">Waterkloof · Waterkloof Ridge · Lynnwood · Lynnwood Glen · Faerie Glen · Moreleta Park. Highest property values. Most estate activity. Best word-of-mouth velocity.</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Expansion Zones</div>
+      <div class="card-title">Phase 2 Suburbs</div>
+      <div class="card-body">Garsfontein · Equestria · Murrayfield · Olympus · Woodlands · Elarduspark. Strong secondary residential market. Excellent reach-to-effort ratio.</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Commercial Targets</div>
+      <div class="card-title">High-Value Accounts</div>
+      <div class="card-body">Menlyn Maine commercial node. Premium private schools in east. Medical suites and corporate parks in the Lynnwood/Garsfontein corridor.</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="h-rule"></div>
+
+<!-- ════════════════════════════════
+     07 · SERVICE OFFERING
+════════════════════════════════ -->
+<div id="s07" style="background:var(--midnight)">
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">07</span>
+    <h2 class="section-title">Service Offering</h2>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="card-grid-3" style="margin-bottom:2px">
+    <div class="card card-forest">
+      <div class="card-label">Core Service</div>
+      <div class="card-title">Premium Artificial Turf Installation</div>
+      <div class="card-body">Full supply and installation of premium artificial turf for residential lawns, gardens, play areas, entertainment spaces, and putting greens. Multiple product tiers available.</div>
+    </div>
+    <div class="card card-forest">
+      <div class="card-label">Core Service</div>
+      <div class="card-title">Outdoor Transformation Design</div>
+      <div class="card-body">Consultation-led design that integrates turf with complementary outdoor elements. Decking borders, stepping stones, garden edging, drainage, irrigation planning.</div>
+    </div>
+    <div class="card card-forest">
+      <div class="card-label">Commercial Service</div>
+      <div class="card-title">Estate & Corporate Installations</div>
+      <div class="card-body">Large-format installations for estates, schools, office parks. Includes project management, phased delivery, and ongoing maintenance agreements.</div>
+    </div>
+  </div>
+  <div class="card-grid-3" style="margin-bottom:2px">
+    <div class="card">
+      <div class="card-label">Value-Add</div>
+      <div class="card-title">Site Preparation</div>
+      <div class="card-body">Excavation, levelling, drainage solutions, base material installation. Full site-ready preparation before turf laying begins.</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Value-Add</div>
+      <div class="card-title">Maintenance Packages</div>
+      <div class="card-body">Recurring annual maintenance agreements. Brushing, infill top-up, edge checks, minor repairs. Creates predictable recurring revenue.</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Future Tier</div>
+      <div class="card-title">Full Outdoor Renovation</div>
+      <div class="card-body">Complete outdoor space redesign encompassing turf, hardscaping, lighting accents, furniture placement guidance, and professional photography for the portfolio.</div>
+    </div>
+  </div>
+
+  <div style="background:rgba(200,149,58,0.05);border:1px solid rgba(200,149,58,0.15);padding:36px 40px;margin-top:2px">
+    <div class="small-caps" style="margin-bottom:20px">Product Positioning Principle</div>
+    <p style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;font-style:italic;color:rgba(245,242,236,0.8)">PrimeTurf does not sell turf. PrimeTurf sells the <span class="gold">transformation of how a property feels, functions, and is perceived</span>. The turf is the mechanism. The experience is the product.</p>
+  </div>
+</div>
+</div>
+
+<div class="h-rule"></div>
+
+<!-- ════════════════════════════════
+     08 · CUSTOMER JOURNEY
+════════════════════════════════ -->
+<div id="s08" style="background:var(--section-alt)">
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">08</span>
+    <h2 class="section-title">Customer Journey</h2>
+    <div class="section-rule"></div>
+  </div>
+  <p class="italic-lead">Every client interaction is a brand moment. The journey must feel as premium as the installation itself.</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px">
+    <div>
+      <div class="journey-step">
+        <div class="journey-node"><div class="journey-node-num">01</div></div>
+        <div><div class="journey-content-title">Discovery</div><div class="journey-content-body">Client sees a PrimeTurf installation in their neighbourhood, finds PrimeTurf on Google, or receives a referral from a trusted contact. First impression is polished and premium.</div></div>
+      </div>
+      <div class="journey-connector"></div>
+      <div class="journey-step">
+        <div class="journey-node"><div class="journey-node-num">02</div></div>
+        <div><div class="journey-content-title">First Contact</div><div class="journey-content-body">Client reaches out via WhatsApp, website form, or Google Business. Response within 2 hours. Professional, measured tone from the first message.</div></div>
+      </div>
+      <div class="journey-connector"></div>
+      <div class="journey-step">
+        <div class="journey-node"><div class="journey-node-num">03</div></div>
+        <div><div class="journey-content-title">Site Consultation</div><div class="journey-content-body">Free, professional on-site visit. Measuring, brief taking, product recommendation. Team arrives in uniform. Vehicle is clean. The visit itself builds confidence.</div></div>
+      </div>
+      <div class="journey-connector"></div>
+      <div class="journey-step">
+        <div class="journey-node"><div class="journey-node-num">04</div></div>
+        <div><div class="journey-content-title">Premium Proposal</div><div class="journey-content-body">Detailed quote delivered within 24–48 hours. Branded proposal document. Line-item clarity. No surprises. Options where appropriate.</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="journey-step">
+        <div class="journey-node"><div class="journey-node-num">05</div></div>
+        <div><div class="journey-content-title">Confirmation</div><div class="journey-content-body">Deposit invoice issued. Installation date confirmed. Preparation instructions provided. Client is kept informed and feels managed.</div></div>
+      </div>
+      <div class="journey-connector"></div>
+      <div class="journey-step">
+        <div class="journey-node"><div class="journey-node-num">06</div></div>
+        <div><div class="journey-content-title">Installation Day</div><div class="journey-content-body">Team arrives on time. Work area is respected. Before photo captured. Site is left cleaner than found. Progress update if multi-day.</div></div>
+      </div>
+      <div class="journey-connector"></div>
+      <div class="journey-step">
+        <div class="journey-node"><div class="journey-node-num">07</div></div>
+        <div><div class="journey-content-title">Handover</div><div class="journey-content-body">Walkthrough with client. After photo captured. Care instructions provided. Final invoice. Warm, professional close. Review request delivered within 24 hours.</div></div>
+      </div>
+      <div class="journey-connector"></div>
+      <div class="journey-step">
+        <div class="journey-node"><div class="journey-node-num">08</div></div>
+        <div><div class="journey-content-title">Post-Install Nurture</div><div class="journey-content-body">7-day follow-up check-in. Annual maintenance reminder at 12 months. Referral invitation extended naturally. Ongoing relationship, not a transaction.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="h-rule"></div>
+
+<!-- ════════════════════════════════
+     09 · LEAD MANAGEMENT
+════════════════════════════════ -->
+<div id="s09" style="background:var(--midnight)">
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">09</span>
+    <h2 class="section-title">Lead Management System</h2>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="card-grid-3" style="margin-bottom:32px">
+    <div class="card">
+      <div class="card-label">Lead Sources</div>
+      <div class="card-title">Inbound Channels</div>
+      <ul class="pt-list" style="margin-top:8px">
+        <li>Google Business Profile enquiries</li>
+        <li>Website contact form submissions</li>
+        <li>WhatsApp Business direct messages</li>
+        <li>Referrals from existing clients</li>
+        <li>Estate manager introductions</li>
+        <li>Social media enquiry messages</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-label">Lead Stages</div>
+      <div class="card-title">Pipeline Status</div>
+      <ul class="pt-list" style="margin-top:8px">
+        <li><strong>New</strong> — Enquiry received, not yet contacted</li>
+        <li><strong>Contacted</strong> — First response sent</li>
+        <li><strong>Site Visit Booked</strong> — Consultation scheduled</li>
+        <li><strong>Quote Sent</strong> — Proposal delivered</li>
+        <li><strong>Negotiating</strong> — Follow-up in progress</li>
+        <li><strong>Won / Lost</strong> — Outcome recorded</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-label">Response Standards</div>
+      <div class="card-title">Response SLA</div>
+      <ul class="pt-list" style="margin-top:8px">
+        <li><strong>First response:</strong> Within 2 hours (business hours)</li>
+        <li><strong>Site visit offer:</strong> Within 24 hours</li>
+        <li><strong>Proposal delivery:</strong> Within 48 hours post-visit</li>
+        <li><strong>Follow-up if no response:</strong> 48-hour cadence × 3</li>
+        <li><strong>Lost lead archive:</strong> 90 days, re-contact on season</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="background:rgba(26,58,42,0.2);border:1px solid rgba(200,149,58,0.1);padding:36px 40px">
+    <div class="small-caps" style="margin-bottom:20px">Lead Tracking Tool</div>
+    <p style="font-size:13px;color:rgba(245,242,236,0.55);line-height:1.8;max-width:720px">All leads logged in a shared CRM (Google Sheets or HubSpot Free at launch, migrating to a dedicated CRM at scale). Every lead has an owner, a date, a stage, and a next action. No lead falls through the cracks. Mechanne owns lead tracking and pipeline hygiene.</p>
+  </div>
+</div>
+</div>
+
+<div class="h-rule"></div>
+
+<!-- ════════════════════════════════
+     10 · SALES PROCESS
+════════════════════════════════ -->
+<div id="s10" style="background:var(--section-alt)">
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">10</span>
+    <h2 class="section-title">Sales Process</h2>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="process-flow" style="margin-bottom:40px">
+    <div class="process-step"><div class="process-step-num">01</div><div class="process-step-title">Enquiry</div><div class="process-step-body">Warm, professional first response. Qualify intent and timeline. Book site visit.</div></div>
+    <div class="process-step"><div class="process-step-num">02</div><div class="process-step-title">Site Visit</div><div class="process-step-body">Measure. Advise. Build trust. Present product samples. Take before photos.</div></div>
+    <div class="process-step"><div class="process-step-num">03</div><div class="process-step-title">Proposal</div><div class="process-step-body">Branded, detailed quote delivered professionally. Options at two price points where possible.</div></div>
+    <div class="process-step"><div class="process-step-num">04</div><div class="process-step-title">Follow-Up</div><div class="process-step-body">48-hour check-in. Address concerns. No pressure. Add value in every contact.</div></div>
+    <div class="process-step"><div class="process-step-num">05</div><div class="process-step-title">Close</div><div class="process-step-body">Deposit invoice. Booking confirmation. Install date locked in.</div></div>
+  </div>
+
+  <div class="card-grid-2">
+    <div class="card">
+      <div class="card-label">Sales Philosophy</div>
+      <div class="card-title">Consultation Not Pitch</div>
+      <div class="card-body">PrimeTurf sales operate on the principle of expert consultation. The salesperson's role is to deeply understand the client's vision, advise on the best solution, and present the investment with confidence. No high-pressure tactics. No discounting to win. Clients at this level respond to expertise and trust.</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Closing Tactics</div>
+      <div class="card-title">Premium Signals</div>
+      <div class="card-body">Reference similar premium installations nearby. Use social proof with before/after examples. Emphasise warranty, quality of materials, and installation process. Offer a clear next step. The goal is the client feeling confident in their decision, not coerced into it. A client who chooses PrimeTurf freely becomes an advocate.</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="h-rule"></div>
+
+<!-- ════════════════════════════════
+     11 · ESTIMATION & QUOTING
+════════════════════════════════ -->
+<div id="s11" style="background:var(--midnight)">
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">11</span>
+    <h2 class="section-title">Estimation & Quoting System</h2>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="card-grid-3">
+    <div class="card card-forest">
+      <div class="card-label">Measurement</div>
+      <div class="card-title">On-Site Precision</div>
+      <div class="card-body">All measurements taken on-site with professional tools. Digital measurement where applicable. Surface area, gradient, drainage requirements, and prep scope documented. No estimates from photographs.</div>
+    </div>
+    <div class="card card-forest">
+      <div class="card-label">Quote Structure</div>
+      <div class="card-title">Transparent Line Items</div>
+      <div class="card-body">Materials (turf product, infill, edging, pins). Site preparation. Labour. VAT. Optional add-ons clearly separated. No hidden costs. The proposal must answer all questions before they are asked.</div>
+    </div>
+    <div class="card card-forest">
+      <div class="card-label">Presentation</div>
+      <div class="card-title">Branded Proposal Document</div>
+      <div class="card-body">PrimeTurf branded proposal PDF. Client name personalised. Project name. Scope summary. Line-item pricing. Product spec sheet reference. Validity period. Payment terms clearly stated.</div>
+    </div>
+  </div>
+
+  <div style="margin-top:2px;background:rgba(255,255,255,0.02);border:1px solid rgba(200,149,58,0.08);padding:36px 40px">
+    <div class="small-caps" style="margin-bottom:20px">Quote Approval Flow</div>
+    <div class="process-flow">
+      <div class="process-step"><div class="process-step-num">Step 1</div><div class="process-step-title">Stefan measures</div><div class="process-step-body">On-site measurement and scope documentation.</div></div>
+      <div class="process-step"><div class="process-step-num">Step 2</div><div class="process-step-title">Pricing calculated</div><div class="process-step-body">Material + labour + margin applied per pricing guide.</div></div>
+      <div class="process-step"><div class="process-step-num">Step 3</div><div class="process-step-title">Leon reviews</div><div class="process-step-body">Final price approval for all quotes above threshold.</div></div>
+      <div class="process-step"><div class="process-step-num">Step 4</div><div class="process-step-title">Mechanne sends</div><div class="process-step-body">Branded PDF sent with covering message via WhatsApp or email.</div></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="h-rule"></div>
+
+<!-- ════════════════════════════════
+     12 · INSTALLATION WORKFLOW
+════════════════════════════════ -->
+<div id="s12" style="background:var(--section-alt)">
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">12</span>
+    <h2 class="section-title">Installation Workflow</h2>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="process-flow" style="margin-bottom:40px">
+    <div class="process-step"><div class="process-step-num">Pre-Install</div><div class="process-step-title">Preparation</div><div class="process-step-body">Site confirmation. Material procurement confirmed. Team briefed. Client reminded day before.</div></div>
+    <div class="process-step"><div class="process-step-num">Day Of</div><div class="process-step-title">Arrival</div><div class="process-step-body">On time. Uniforms on. Equipment clean. Before photo taken with client present if possible.</div></div>
+    <div class="process-step"><div class="process-step-num">Phase 1</div><div class="process-step-title">Ground Work</div><div class="process-step-body">Existing surface removal. Excavation if required. Base material installation and compaction.</div></div>
+    <div class="process-step"><div class="process-step-num">Phase 2</div><div class="process-step-title">Turf Laying</div><div class="process-step-body">Turf cut to spec. Direction aligned. Joins executed invisibly. Edges secured to spec.</div></div>
+    <div class="process-step"><div class="process-step-num">Phase 3</div><div class="process-step-title">Finishing</div><div class="process-step-body">Infill applied and brushed. Final inspection by Stefan. Site cleaned. After photo captured.</div></div>
+    <div class="process-step"><div class="process-step-num">Handover</div><div class="process-step-title">Sign-Off</div><div class="process-step-body">Client walkthrough. Care guide provided. Final invoice issued. Review request initiated.</div></div>
+  </div>
+
+  <div class="card-grid-2">
+    <div class="card">
+      <div class="card-label">Stefan's Installation Standard</div>
+      <div class="card-title">Non-Negotiable Site Rules</div>
+      <ul class="check-list" style="margin-top:8px">
+        <li>Team in full PrimeTurf uniform at all times</li>
+        <li>No music without client permission</li>
+        <li>No food or drink visible to client</li>
+        <li>Site left cleaner than found, every day</li>
+        <li>Before and after photos mandatory on every job</li>
+        <li>Client questions answered professionally, not deflected</li>
+        <li>Any damage to client property reported immediately to Leon</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-label">Warranty Standard</div>
+      <div class="card-title">PrimeTurf Guarantee</div>
+      <ul class="check-list" style="margin-top:8px">
+        <li>Product warranty passed through from supplier</li>
+        <li>PrimeTurf workmanship guarantee: 12 months</li>
+        <li>Defective installation remedied at no cost</li>
+        <li>All warranty claims handled within 5 business days</li>
+        <li>Warranty documentation included with every proposal</li>
+        <li>Maintenance guide provided to protect warranty validity</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="h-rule"></div>
+
+<!-- ════════════════════════════════
+     13 · QUALITY CONTROL
+════════════════════════════════ -->
+<div id="s13" style="background:var(--midnight)">
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">13</span>
+    <h2 class="section-title">Quality Control Standards</h2>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="principle-block">
+    <div class="principle-text">"The installation is the product. The experience surrounding it is the brand. Both must be flawless."</div>
+    <div class="principle-attr">PrimeTurf · Quality Principle</div>
+  </div>
+
+  <div class="card-grid-3">
+    <div class="card card-forest">
+      <div class="card-label">Pre-Installation QC</div>
+      <div class="card-title">Materials Check</div>
+      <ul class="check-list" style="margin-top:8px">
+        <li>Correct turf product confirmed against quote</li>
+        <li>Sufficient material ordered with 5% waste margin</li>
+        <li>All consumables checked before departure</li>
+        <li>Equipment in working order</li>
+        <li>Site conditions confirmed suitable</li>
+      </ul>
+    </div>
+    <div class="card card-forest">
+      <div class="card-label">During Installation QC</div>
+      <div class="card-title">Stefan's Checkpoints</div>
+      <ul class="check-list" style="margin-top:8px">
+        <li>Base compaction meets spec before turf is laid</li>
+        <li>Drainage gradient correct</li>
+        <li>Join quality inspected at each seam</li>
+        <li>Pile direction consistent throughout</li>
+        <li>Edges secured correctly to all boundaries</li>
+      </ul>
+    </div>
+    <div class="card card-forest">
+      <div class="card-label">Post-Installation QC</div>
+      <div class="card-title">Final Sign-Off</div>
+      <ul class="check-list" style="margin-top:8px">
+        <li>Full visual inspection from client's perspective</li>
+        <li>Infill uniformly distributed and brushed</li>
+        <li>Edges flush and neat at all boundaries</li>
+        <li>No visible joins under normal viewing conditions</li>
+        <li>Client satisfaction confirmed before departure</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="h-rule"></div>
+
+<!-- ════════════════════════════════
+     14 · CLIENT COMMUNICATION
+════════════════════════════════ -->
+<div id="s14" style="background:var(--section-alt)">
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">14</span>
+    <h2 class="section-title">Client Communication Framework</h2>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="card-grid-3" style="margin-bottom:2px">
+    <div class="card">
+      <div class="card-label">Tone Standard</div>
+      <div class="card-title">Always Professional</div>
+      <div class="card-body">Every message is measured, warm, and professional. No slang. No exclamation marks. No rushed responses. The tone never drops below the standard of the brand — even in informal WhatsApp exchanges.</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Primary Channel</div>
+      <div class="card-title">WhatsApp Business</div>
+      <div class="card-body">Preferred by clients. Fast. Documented. PrimeTurf WhatsApp profile is set up as a Business account with correct branding, auto-reply, and professional away message.</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Email Standard</div>
+      <div class="card-title">Formal Proposals Only</div>
+      <div class="card-body">Email reserved for quote delivery, invoicing, and formal project documentation. All emails use branded signature including logo, name, role, and contact number.</div>
+    </div>
+  </div>
+
+  <div style="overflow-x:auto;margin-top:2px">
+  <table class="pt-table" style="width:100%">
     <thead>
       <tr>
-        <th>NAME</th>
-        <th>OFFICIAL TITLE</th>
-        <th>CORE RESPONSIBILITIES</th>
-        <th>OWNS</th>
+        <th>Touchpoint</th>
+        <th>Owner</th>
+        <th>Channel</th>
+        <th>Timing</th>
+        <th>Tone</th>
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <td>
-          <span class="role-title">Leon van Eeden</span>
-          <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--grey);margin-top:4px;">DIRECTOR</div>
-        </td>
-        <td style="font-weight:600;">Managing Director &<br>Commercial Lead</td>
-        <td style="font-size:13px;color:#555;">Overall business leadership. Site visits and measurements. Client quotations. Team and operations management. Partnerships and commercial deals.</td>
-        <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--green);">Revenue · Operations · Quotes</td>
-      </tr>
-      <tr>
-        <td>
-          <span class="role-title">Mechanne van Eeden</span>
-          <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--grey);margin-top:4px;">DIRECTOR</div>
-        </td>
-        <td style="font-weight:600;">Director of Client Experience<br>& Visual Operations</td>
-        <td style="font-size:13px;color:#555;">First point of contact for ALL leads. Lawn photo collection. Before/after mockup creation (Canva). CRM management. Admin, invoicing, review collection. Social content photography.</td>
-        <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--green);">Lead Pipeline · CRM · Client Relations · Visual Content</td>
-      </tr>
-      <tr>
-        <td>
-          <span class="role-title">Stiaan du Plessis</span>
-          <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--grey);margin-top:4px;">HEAD OF GROWTH</div>
-        </td>
-        <td style="font-weight:600;">Head of Growth &<br>Digital Strategy</td>
-        <td style="font-size:13px;color:#555;">Brand identity and all digital assets. Website build and SEO. Google Business Profile. Social media content and viral campaigns. Lead generation system design. Referral and affiliate programme. Analytics and reporting. Facebook group management (27k).</td>
-        <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--green);">Brand · Digital · SEO · Social · Lead Systems</td>
-      </tr>
-      <tr>
-        <td>
-          <span class="role-title">Installation Team</span>
-          <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--grey);margin-top:4px;">OPERATIONS</div>
-        </td>
-        <td style="font-weight:600;">Field Operations &<br>Brand Ambassadors</td>
-        <td style="font-size:13px;color:#555;">Professional, branded installation. Photo documentation of every job (before/during/after). Human connection with homeowners — they represent the brand face-to-face. Trained to ask for referrals and Google reviews on completion.</td>
-        <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--green);">Installation Quality · Brand on the Ground</td>
-      </tr>
-      <tr>
-        <td>
-          <span class="role-title">Agents / Partners</span>
-          <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--grey);margin-top:4px;">COMMISSION</div>
-        </td>
-        <td style="font-weight:600;">Referral Agents &<br>Bakkie Brigade</td>
-        <td style="font-size:13px;color:#555;">Generate referral leads using unique WhatsApp link or code. Includes handymen, garden services, estate agents, hardware stores, and affiliate social media promoters.</td>
-        <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--green);">5% residential · 2.5% commercial/schools</td>
-      </tr>
+      <tr><td>First response to enquiry</td><td>Mechanne</td><td>WhatsApp</td><td>Within 2 hours</td><td>Warm, professional, brief</td></tr>
+      <tr><td>Site visit confirmation</td><td>Mechanne</td><td>WhatsApp</td><td>Same day as booking</td><td>Clear, confirming details</td></tr>
+      <tr><td>Quote delivery</td><td>Mechanne</td><td>WhatsApp + Email</td><td>24–48 hrs post-visit</td><td>Professional covering message</td></tr>
+      <tr><td>Deposit confirmation</td><td>Mechanne</td><td>WhatsApp</td><td>Same day received</td><td>Warm acknowledgement</td></tr>
+      <tr><td>Installation day reminder</td><td>Mechanne</td><td>WhatsApp</td><td>Day before</td><td>Brief, helpful, time-confirming</td></tr>
+      <tr><td>Completion message</td><td>Stefan / Mechanne</td><td>WhatsApp</td><td>Day of completion</td><td>Proud, warm, clear</td></tr>
+      <tr><td>Review request</td><td>Mechanne</td><td>WhatsApp</td><td>24 hrs post-install</td><td>Gracious, direct link</td></tr>
+      <tr><td>7-day follow-up</td><td>Mechanne</td><td>WhatsApp</td><td>7 days post-install</td><td>Caring, brief check-in</td></tr>
     </tbody>
   </table>
-</section>
-
-<!-- WHATSAPP GROUP MESSAGE -->
-<section id="whatsapp">
-  <p class="s-tag">WhatsApp Group Launch</p>
-  <h2>Send This.<br>Today.</h2>
-  <p class="lead">This is the founding message for the PrimeTurf WhatsApp group. Clear, direct, no fluff. Everyone knows why they're here and what we're building.</p>
-  <div class="wa-box">
-    <h3>GROUP NAME: PrimeTurf HQ 🌿</h3>
-    <div class="wa-label">Founding Message · Copy & Send</div>
-    <div class="wa-message"><strong>Welcome to PrimeTurf HQ. 🌿</strong>
-
-We're building something new from the ground up — and this is where it all starts.
-
-<strong>What this is:</strong>
-PrimeTurf is a premium artificial grass installation company launching in Gauteng. One team, one area, one relentless focus — with a plan to dominate and expand.
-
-<strong>The team:</strong>
-👤 Leon van Eeden — Managing Director & Operations
-👤 Mechanne van Eeden — Client Experience & Visual Operations  
-👤 Stiaan du Plessis — Head of Growth & Digital Strategy
-
-<strong>Our goal for the first 90 days:</strong>
-→ Brand identity live (logo, website, Google Maps)
-→ First leads generating within Week 1
-→ 2,000m² of installs booked or in pipeline
-→ Top 3 on Google for our target area
-
-<strong>This group is for:</strong>
-✅ Daily updates and progress
-✅ Lead tracking and client comms
-✅ Content, photos, and campaign coordination
-✅ Quick decisions — no waiting, no delays
-
-<strong>How leads work:</strong>
-ALL enquiries go to ONE number. Mechanne handles first contact, collects a photo of the current lawn, sends a before/after mockup, and logs everything. Leon quotes and closes. No lead falls through.
-
-<strong>First actions this week:</strong>
-1. Confirm brand name: PrimeTurf ✓
-2. Register domain + social handles
-3. Logo design started
-4. Facebook group (27k members) rebranded
-5. First content posted
-
-We move fast. We stay focused. Results speak.
-
-Let's build. 💪</div>
   </div>
-</section>
+</div>
+</div>
 
-<!-- COMPENSATION -->
-<section>
-  <p class="s-tag">Compensation Structure</p>
-  <h2>Aligned Incentives.<br>Everyone Wins Together.</h2>
-  <p class="lead">Simple, transparent, results-linked. As the business grows, everyone grows with it. This is the founding structure — reviewed after Month 1.</p>
-  <div class="comp-grid">
-    <div class="comp-item" style="background:var(--black);color:#fff;">
-      <h4 style="color:#4caf65;">Stiaan</h4>
-      <div class="amount" style="color:var(--gold);">R5k</div>
-      <div class="period" style="color:#666;">/ month base · Phase 1</div>
-      <p style="color:#888;">Base retainer covers brand, SEO, website, digital strategy, and all lead generation systems. Reviewed upward as revenue grows. + Commission on closed leads from digital channels.</p>
-      <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#4caf65;margin-top:16px;">+ 5% commission on residential leads closed<br>+ 2.5% on commercial / schools</div>
+<div class="h-rule"></div>
+
+<!-- ════════════════════════════════
+     15 · REFERRAL SYSTEM
+════════════════════════════════ -->
+<div id="s15" style="background:var(--midnight)">
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">15</span>
+    <h2 class="section-title">Referral System</h2>
+    <div class="section-rule"></div>
+  </div>
+  <p class="italic-lead">In Pretoria East's estate communities, a referral carries more weight than any advertisement. The referral system is PrimeTurf's most powerful growth channel.</p>
+
+  <div class="card-grid-3">
+    <div class="card card-forest">
+      <div class="card-label">Referral Trigger</div>
+      <div class="card-title">Post-Install Invitation</div>
+      <div class="card-body">The referral ask is embedded naturally in the 7-day follow-up message. It is not a transaction — it is an invitation. "If you know someone who would love a result like this, we'd love an introduction."</div>
     </div>
-    <div class="comp-item">
-      <h4>Referral Agents</h4>
-      <div class="amount">R500</div>
-      <div class="period">per closed residential lead</div>
-      <p>Anyone who refers a job that closes earns R500–R2,000 depending on project size. Tracked via unique WhatsApp link. Paid on job completion.</p>
-      <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--green);margin-top:16px;">Schools/commercial: 2.5% of project value</div>
+    <div class="card card-forest">
+      <div class="card-label">Referral Incentive</div>
+      <div class="card-title">Meaningful Reward</div>
+      <div class="card-body">Referring clients receive a meaningful reward — service credit, complimentary maintenance visit, or premium gift. The value matches the calibre of the client. Not a voucher. Something considered.</div>
     </div>
-    <div class="comp-item">
-      <h4>Bakkie Brigade</h4>
-      <div class="amount">R500</div>
-      <div class="period">per closed job referred</div>
-      <p>Handymen, gardeners, hardware stores. Simple: share the link, earn when the job closes. No admin, no fuss. Paid same day as client deposit.</p>
-      <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--green);margin-top:16px;">Bigger jobs = bigger commission on % basis</div>
-    </div>
-    <div class="comp-item" style="background:var(--green);color:#fff;">
-      <h4 style="color:#fff;">The Target</h4>
-      <div class="amount" style="color:#fff;">R1.1M</div>
-      <div class="period" style="color:#d0f0d8;">monthly revenue at full capacity</div>
-      <p style="color:#d0f0d8;">2,000m² per month at ~R550/m². At 75% lead-to-close rate. This is the number that changes everything. One team, one area, fully optimised.</p>
-      <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#fff;margin-top:16px;">Stiaan commission at this scale: R55k/month</div>
+    <div class="card card-forest">
+      <div class="card-label">Estate Strategy</div>
+      <div class="card-title">Neighbour Campaigns</div>
+      <div class="card-body">After completing an installation in a complex or estate, a tasteful introduction is made to the estate management. Physical estate-facing signage drives organic neighbour enquiries for 4–6 weeks post-install.</div>
     </div>
   </div>
-</section>
 
-<footer>
-  <p>© 2026 · <span>PrimeTurf</span> · Gauteng Launch Blueprint</p>
-  <p>Prepared by <span>Stiaan du Plessis</span> · Head of Growth & Digital Strategy</p>
-  <p>Leon van Eeden · Mechanne van Eeden · Directors</p>
-</footer>
+  <div style="margin-top:2px;background:rgba(200,149,58,0.05);border:1px solid rgba(200,149,58,0.15);padding:36px 40px">
+    <div class="small-caps" style="margin-bottom:20px">Referral Tracking</div>
+    <p style="font-size:13px;color:rgba(245,242,236,0.55);line-height:1.8;max-width:720px">All referrals are tracked in the CRM with a referral source field. Every new client is asked "How did you hear about PrimeTurf?" Referral rates are reviewed monthly. Stiaan tracks the digital referral sources (social shares, Google reviews leading to calls). Mechanne tracks direct referrals.</p>
+  </div>
+</div>
+</div>
+
+<div class="h-rule"></div>
+
+<!-- ════════════════════════════════
+     16 · GOOGLE BUSINESS STRATEGY
+════════════════════════════════ -->
+<div id="s16" style="background:var(--section-alt)">
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">16</span>
+    <h2 class="section-title">Google Business Strategy</h2>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="card-grid-2" style="margin-bottom:2px">
+    <div class="card card-forest">
+      <div class="card-label">Profile Setup</div>
+      <div class="card-title">Optimised from Day One</div>
+      <ul class="check-list" style="margin-top:12px">
+        <li>Verified Google Business Profile under "PrimeTurf"</li>
+        <li>Category: Landscaper / Artificial Turf Supplier</li>
+        <li>Service area defined: Pretoria East suburbs</li>
+        <li>All contact details complete and consistent with website</li>
+        <li>Business hours set correctly</li>
+        <li>WhatsApp linked via business phone number</li>
+        <li>Services section populated with full offering</li>
+        <li>Description written with target keywords embedded</li>
+      </ul>
+    </div>
+    <div class="card card-forest">
+      <div class="card-label">Ongoing Management</div>
+      <div class="card-title">Active Profile Signals</div>
+      <ul class="check-list" style="margin-top:12px">
+        <li>Before/after photos uploaded weekly at launch</li>
+        <li>Google Posts published bi-weekly</li>
+        <li>All reviews responded to within 48 hours</li>
+        <li>Negative reviews handled professionally and immediately</li>
+        <li>Q&A section monitored and answered promptly</li>
+        <li>Profile updates when services or hours change</li>
+        <li>Monthly performance stats reviewed by Stiaan</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(200,149,58,0.08);padding:36px 40px;margin-top:2px">
+    <div class="small-caps" style="margin-bottom:16px">Target: Google 3-Pack Placement</div>
+    <p style="font-size:13px;color:rgba(245,242,236,0.55);line-height:1.8;max-width:720px">The primary Google Business objective is placement in the local 3-Pack for searches like "artificial turf Pretoria East", "turf installers Waterkloof", "lawn installation Lynnwood". This is driven by review volume, profile completeness, post frequency, and website authority. Stiaan owns this metric.</p>
+  </div>
+</div>
+</div>
+
+<div class="h-rule"></div>
+
+<!-- ════════════════════════════════
+     17 · SEO STRATEGY
+════════════════════════════════ -->
+<div id="s17" style="background:var(--midnight)">
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">17</span>
+    <h2 class="section-title">SEO Strategy</h2>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="card-grid-3" style="margin-bottom:32px">
+    <div class="card">
+      <div class="card-label">Foundation</div>
+      <div class="card-title">Technical SEO</div>
+      <ul class="pt-list" style="margin-top:8px">
+        <li>Fast-loading, mobile-first website</li>
+        <li>Proper canonical tags and no duplicate content</li>
+        <li>Schema markup for local business</li>
+        <li>NAP consistency across all listings</li>
+        <li>Sitemap submitted to Google Search Console</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-label">Content</div>
+      <div class="card-title">Location Pages</div>
+      <ul class="pt-list" style="margin-top:8px">
+        <li>Dedicated suburb pages: Waterkloof, Lynnwood, Faerie Glen</li>
+        <li>Each page targets suburb + service keyword combinations</li>
+        <li>Unique content per page — not templated</li>
+        <li>Before/after gallery per suburb as content grows</li>
+        <li>Internal linking between suburb and service pages</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-label">Authority</div>
+      <div class="card-title">Link Building</div>
+      <ul class="pt-list" style="margin-top:8px">
+        <li>Estate and property management directory listings</li>
+        <li>Pretoria East community Facebook group references</li>
+        <li>Supplier co-marketing links</li>
+        <li>Local business directory submissions</li>
+        <li>Google reviews mentioning suburbs (indirect signal)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="background:rgba(26,58,42,0.2);border:1px solid rgba(200,149,58,0.1);padding:36px 40px">
+    <div class="small-caps" style="margin-bottom:20px">Primary Keyword Targets</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px">
+      <span class="rtag">Artificial turf Pretoria East</span>
+      <span class="rtag">Turf installation Waterkloof</span>
+      <span class="rtag">Fake grass Lynnwood</span>
+      <span class="rtag">Artificial lawn Faerie Glen</span>
+      <span class="rtag">Premium turf installer Pretoria</span>
+      <span class="rtag">Artificial turf for estates</span>
+      <span class="rtag">Lawn replacement Garsfontein</span>
+      <span class="rtag">Low maintenance lawn Pretoria</span>
+      <span class="rtag">Turf installation Moreleta Park</span>
+      <span class="rtag">Artificial grass school Pretoria</span>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="h-rule"></div>
+
+<!-- ════════════════════════════════
+     18 · CONTENT ENGINE
+════════════════════════════════ -->
+<div id="s18" style="background:var(--section-alt)">
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">18</span>
+    <h2 class="section-title">Content Engine</h2>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="card-grid-4">
+    <div class="card">
+      <div class="card-label">Content Pillar 01</div>
+      <div class="card-title">Transformations</div>
+      <div class="card-body">Before/after installation stories. The primary content type. Visually compelling. Emotionally resonant. Estate-specific where possible.</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Content Pillar 02</div>
+      <div class="card-title">Education</div>
+      <div class="card-body">Why artificial turf. What to consider. How to care for it. Positions PrimeTurf as the trusted expert, not just the installer.</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Content Pillar 03</div>
+      <div class="card-title">Behind the Standard</div>
+      <div class="card-body">The installation process. The team. The standards. Builds trust by making the premium process visible. Client confidence content.</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Content Pillar 04</div>
+      <div class="card-title">Social Proof</div>
+      <div class="card-body">Client testimonials, reviews, and project features. Third-party validation. The social proof content that converts a browser into an enquiry.</div>
+    </div>
+  </div>
+
+  <div style="overflow-x:auto;margin-top:2px">
+  <table class="pt-table">
+    <thead>
+      <tr><th>Content Type</th><th>Frequency</th><th>Channel</th><th>Owner</th><th>Purpose</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Before/After Posts</td><td>Weekly</td><td>Instagram, Facebook, Google</td><td>Stiaan</td><td>Conversion</td></tr>
+      <tr><td>Project Feature (long)</td><td>Monthly</td><td>Website Blog</td><td>Stiaan</td><td>SEO + Authority</td></tr>
+      <tr><td>Educational Reel/Post</td><td>Bi-weekly</td><td>Instagram, Facebook</td><td>Stiaan</td><td>Trust Building</td></tr>
+      <tr><td>Client Testimonial</td><td>After each install</td><td>Google + Social</td><td>Mechanne → Stiaan</td><td>Social Proof</td></tr>
+      <tr><td>Google Business Post</td><td>Bi-weekly</td><td>Google Business</td><td>Stiaan</td><td>Local SEO Signal</td></tr>
+      <tr><td>Estate/Community Content</td><td>Monthly</td><td>Facebook Community Groups</td><td>Stiaan</td><td>Local Awareness</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+</div>
+
+<div class="h-rule"></div>
+
+<!-- ════════════════════════════════
+     19 · SOCIAL MEDIA STRATEGY
+════════════════════════════════ -->
+<div id="s19" style="background:var(--midnight)">
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">19</span>
+    <h2 class="section-title">Social Media Strategy</h2>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="card-grid-3">
+    <div class="card card-forest">
+      <div class="card-label">Platform 01</div>
+      <div class="card-title">Instagram</div>
+      <div class="card-body">Primary visual brand platform. Feed styled as a premium portfolio — dark frames, gold accents, estate photography. Stories for behind-the-scenes. Reels for before/after reveals. Target: Pretoria East home/estate owners aged 30–55.</div>
+    </div>
+    <div class="card card-forest">
+      <div class="card-label">Platform 02</div>
+      <div class="card-title">Facebook</div>
+      <div class="card-body">Broader reach for residential audience. Community group participation in Pretoria East suburb groups. Facebook Business page for reviews. Paid ads in Phase 2 when budget allows. Target: Homeowners 35–60.</div>
+    </div>
+    <div class="card card-forest">
+      <div class="card-label">Platform 03</div>
+      <div class="card-title">WhatsApp Business</div>
+      <div class="card-body">Status updates showing current projects and transformations. Client communication primary channel. Business status visible to contacts — consistent touchpoint for brand presence.</div>
+    </div>
+  </div>
+
+  <div style="margin-top:2px;background:rgba(255,255,255,0.02);border:1px solid rgba(200,149,58,0.08);padding:36px 40px">
+    <div class="small-caps" style="margin-bottom:20px">Social Standard</div>
+    <p style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;font-style:italic;color:rgba(245,242,236,0.7);line-height:1.8">The PrimeTurf social feed must look like a high-end outdoor design portfolio, not a local trades page. Every post earns its place. Blurry photos, cluttered compositions, and promotional-looking graphics have no place on this feed.</p>
+  </div>
+</div>
+</div>
+
+<div class="h-rule"></div>
+
+<!-- ════════════════════════════════
+     20 · BEFORE & AFTER SYSTEM
+════════════════════════════════ -->
+<div id="s20" style="background:var(--section-alt)">
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">20</span>
+    <h2 class="section-title">Before & After Campaign System</h2>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="card-grid-3">
+    <div class="card">
+      <div class="card-label">Capture Protocol</div>
+      <div class="card-title">Mandatory On Every Job</div>
+      <div class="card-body">Before photo: same angle, good light, wide enough to show context. After photo: identical angle and distance. Golden hour where possible. Stefan is responsible for capture. Client permission confirmed at booking stage.</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Editing Standard</div>
+      <div class="card-title">Consistent Treatment</div>
+      <div class="card-body">Consistent Lightroom preset or template. Deep forest and gold tone. Not over-filtered. The before must show the problem. The after must show the transformation. Both must be honest and compelling.</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Distribution</div>
+      <div class="card-title">Multi-Channel Deploy</div>
+      <div class="card-body">Instagram post + reel reveal. Facebook post. Google Business photo upload. Website gallery (ongoing). Project blog feature for large installs. Client's before/after is their referral tool — share directly with them too.</div>
+    </div>
+  </div>
+
+  <div style="margin-top:2px;background:rgba(26,58,42,0.2);border:1px solid rgba(200,149,58,0.1);padding:36px 40px">
+    <div class="small-caps" style="margin-bottom:16px">The Before/After Asset Is PrimeTurf's Most Valuable Marketing Collateral</div>
+    <p style="font-size:13px;color:rgba(245,242,236,0.5);line-height:1.8;max-width:720px">A single compelling before/after from a recognisable Pretoria East estate carries more conversion power than any paid ad. It proves capability, shows area relevance, and triggers the "I want that" response in the target audience. Building a library of 50+ high-quality before/afters is a primary Year 1 asset goal.</p>
+  </div>
+</div>
+</div>
+
+<div class="h-rule"></div>
+
+<!-- ════════════════════════════════
+     21 · REVIEW ACQUISITION
+════════════════════════════════ -->
+<div id="s21" style="background:var(--midnight)">
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">21</span>
+    <h2 class="section-title">Review Acquisition System</h2>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="kpi-grid" style="margin-bottom:32px">
+    <div class="kpi-card"><div class="kpi-label">Year 1 Target</div><div class="kpi-value"><span>50</span>+</div><div class="kpi-sub">Google reviews</div></div>
+    <div class="kpi-card"><div class="kpi-label">Target Rating</div><div class="kpi-value"><span>4.9</span>★</div><div class="kpi-sub">Minimum average</div></div>
+    <div class="kpi-card"><div class="kpi-label">Request Timing</div><div class="kpi-value" style="font-size:24px"><span>24</span> hrs</div><div class="kpi-sub">Post-installation</div></div>
+    <div class="kpi-card"><div class="kpi-label">Response SLA</div><div class="kpi-value" style="font-size:24px"><span>48</span> hrs</div><div class="kpi-sub">All reviews responded to</div></div>
+  </div>
+
+  <div class="process-flow">
+    <div class="process-step"><div class="process-step-num">Step 01</div><div class="process-step-title">Permission</div><div class="process-step-body">Client is told during handover that a review request will follow. Sets expectation positively.</div></div>
+    <div class="process-step"><div class="process-step-num">Step 02</div><div class="process-step-title">Request</div><div class="process-step-body">WhatsApp message 24 hrs post-install. Warm, brief, direct Google review link included.</div></div>
+    <div class="process-step"><div class="process-step-num">Step 03</div><div class="process-step-title">Reminder</div><div class="process-step-body">If no review after 5 days, one gentle follow-up. 7-day check-in creates natural second opportunity.</div></div>
+    <div class="process-step"><div class="process-step-num">Step 04</div><div class="process-step-title">Response</div><div class="process-step-body">Every review — 5-star or otherwise — receives a professional, personal response within 48 hours.</div></div>
+    <div class="process-step"><div class="process-step-num">Step 05</div><div class="process-step-title">Leverage</div><div class="process-step-body">5-star reviews shared on social (with permission). Testimonial quotes used in proposals and website.</div></div>
+  </div>
+</div>
+</div>
+
+<div class="h-rule"></div>
+
+<!-- ════════════════════════════════
+     22 · OPERATIONAL INFRASTRUCTURE
+════════════════════════════════ -->
+<div id="s22" style="background:var(--section-alt)">
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">22</span>
+    <h2 class="section-title">Operational Infrastructure</h2>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="card-grid-3" style="margin-bottom:2px">
+    <div class="card card-forest">
+      <div class="card-label">Communications</div>
+      <div class="card-title">Core Ops Tools</div>
+      <ul class="check-list" style="margin-top:8px">
+        <li>WhatsApp Business for client comms</li>
+        <li>Shared Google Workspace for documents</li>
+        <li>Google Drive for photo and project storage</li>
+        <li>Shared calendar for scheduling</li>
+        <li>WhatsApp group for founding team</li>
+      </ul>
+    </div>
+    <div class="card card-forest">
+      <div class="card-label">Finance & Admin</div>
+      <div class="card-title">Financial Infrastructure</div>
+      <ul class="check-list" style="margin-top:8px">
+        <li>Dedicated PrimeTurf business bank account</li>
+        <li>Invoice tracking and payment records</li>
+        <li>Supplier account management</li>
+        <li>Monthly P&L review between founders</li>
+        <li>Deposit and payment terms enforced consistently</li>
+      </ul>
+    </div>
+    <div class="card card-forest">
+      <div class="card-label">Equipment & Vehicles</div>
+      <div class="card-title">Physical Infrastructure</div>
+      <ul class="check-list" style="margin-top:8px">
+        <li>Vehicles cleaned and presentation-ready daily</li>
+        <li>Branded vehicle wraps applied</li>
+        <li>Equipment maintained on scheduled basis</li>
+        <li>Material storage organised and secure</li>
+        <li>Team uniforms laundered and complete</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="h-rule"></div>
+
+<!-- ════════════════════════════════
+     23 · TEAM GROWTH PLAN
+════════════════════════════════ -->
+<div id="s23" style="background:var(--midnight)">
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">23</span>
+    <h2 class="section-title">Team Growth Plan</h2>
+    <div class="section-rule"></div>
+  </div>
+  <p class="italic-lead">Hire when the system demands it. Not before. Every hire must immediately add capacity or quality — never complexity.</p>
+
+  <div class="roadmap">
+    <div class="roadmap-item">
+      <div class="roadmap-dot active"></div>
+      <div class="roadmap-phase">Launch Stage · Now</div>
+      <div class="roadmap-title">Founding Four</div>
+      <div class="roadmap-body">Leon, Mechanne, Stefan, Stiaan. All functions covered. Lean and agile. Each founder is an owner of their domain. No hiring until demand consistently outpaces capacity.</div>
+      <div class="roadmap-tags"><span class="rtag">4 Founders</span><span class="rtag">All Functions Covered</span></div>
+    </div>
+    <div class="roadmap-item">
+      <div class="roadmap-dot"></div>
+      <div class="roadmap-phase">Growth Stage · 6–18 Months</div>
+      <div class="roadmap-title">First Installations Hire</div>
+      <div class="roadmap-body">Stefan trains and leads a dedicated installation crew. One skilled crew member initially. Trained to PrimeTurf standard before any client-facing work. Stefan remains quality owner.</div>
+      <div class="roadmap-tags"><span class="rtag">+1 Crew Member</span><span class="rtag">Stefan Trains</span></div>
+    </div>
+    <div class="roadmap-item">
+      <div class="roadmap-dot"></div>
+      <div class="roadmap-phase">Scale Stage · 18–36 Months</div>
+      <div class="roadmap-title">Operations & Admin Support</div>
+      <div class="roadmap-body">Admin support for Mechanne. Second installation crew as volume grows. Possible operations coordinator to assist Stefan across multiple concurrent jobs. Sales support for lead qualification.</div>
+      <div class="roadmap-tags"><span class="rtag">Admin Support</span><span class="rtag">Second Crew</span><span class="rtag">Ops Coordinator</span></div>
+    </div>
+    <div class="roadmap-item">
+      <div class="roadmap-dot"></div>
+      <div class="roadmap-phase">Expansion Stage · Year 3+</div>
+      <div class="roadmap-title">Territory Teams</div>
+      <div class="roadmap-body">Each new territory requires an Operations Lead (Stefan equivalent), a Client Experience person (Mechanne equivalent), and a growth function. The founding model is replicated. Founders oversee and systemise.</div>
+      <div class="roadmap-tags"><span class="rtag">Territory Ops Lead</span><span class="rtag">Client Experience</span><span class="rtag">Replicated Model</span></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="h-rule"></div>
+
+<!-- ════════════════════════════════
+     24 · AREA EXPANSION FRAMEWORK
+════════════════════════════════ -->
+<div id="s24" style="background:var(--section-alt)">
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">24</span>
+    <h2 class="section-title">Area Expansion Framework</h2>
+    <div class="section-rule"></div>
+  </div>
+  <p class="italic-lead">No territory opens until the preceding territory is demonstrably owned. Expansion is earned, not assumed.</p>
+
+  <div class="expansion-phases">
+    <div class="exp-phase active">
+      <div class="exp-phase-yr">Year 1–2</div>
+      <div class="exp-phase-title">Pretoria East</div>
+      <div class="exp-phase-body">Beachhead territory. All systems built and proven here. 50+ installs. 3-Pack Google presence. Strong referral network.</div>
+    </div>
+    <div class="exp-phase">
+      <div class="exp-phase-yr">Year 2–3</div>
+      <div class="exp-phase-title">Greater Pretoria</div>
+      <div class="exp-phase-body">Centurion, Midrand, Pretoria North. Playbook replicated. Territory operations lead hired. Brand recognition carries.</div>
+    </div>
+    <div class="exp-phase">
+      <div class="exp-phase-yr">Year 3–4</div>
+      <div class="exp-phase-title">Johannesburg North</div>
+      <div class="exp-phase-body">Sandton, Fourways, Hyde Park, Bryanston. High-value residential and commercial concentration. Premium market match.</div>
+    </div>
+    <div class="exp-phase">
+      <div class="exp-phase-yr">Year 4–5</div>
+      <div class="exp-phase-title">Cape Town / Coastal</div>
+      <div class="exp-phase-body">Atlantic Seaboard, Southern Suburbs. Climate drives premium artificial turf demand. National brand status unlocked.</div>
+    </div>
+    <div class="exp-phase">
+      <div class="exp-phase-yr">Year 5+</div>
+      <div class="exp-phase-title">Franchise Model</div>
+      <div class="exp-phase-body">PrimeTurf as a licensed brand and system. Territory operators own their region. Royalty structure. National brand, local ownership.</div>
+    </div>
+  </div>
+
+  <div style="margin-top:32px;background:rgba(26,58,42,0.2);border:1px solid rgba(200,149,58,0.1);padding:36px 40px">
+    <div class="small-caps" style="margin-bottom:16px">Expansion Readiness Criteria</div>
+    <div class="card-grid-4" style="gap:2px;margin-top:20px">
+      <div style="padding:24px;background:rgba(255,255,255,0.02);border:1px solid rgba(200,149,58,0.06)">
+        <div class="small-caps" style="font-size:9px;margin-bottom:8px">Financial</div>
+        <p style="font-size:12px;color:rgba(245,242,236,0.5)">Current territory is profitable. Expansion funded without compromising existing operations.</p>
+      </div>
+      <div style="padding:24px;background:rgba(255,255,255,0.02);border:1px solid rgba(200,149,58,0.06)">
+        <div class="small-caps" style="font-size:9px;margin-bottom:8px">Systems</div>
+        <p style="font-size:12px;color:rgba(245,242,236,0.5)">All operational SOPs documented and proven. Able to be followed without founder involvement.</p>
+      </div>
+      <div style="padding:24px;background:rgba(255,255,255,0.02);border:1px solid rgba(200,149,58,0.06)">
+        <div class="small-caps" style="font-size:9px;margin-bottom:8px">Team</div>
+        <p style="font-size:12px;color:rgba(245,242,236,0.5)">Territory lead identified and trained. Existing territory can function without a founder on-site daily.</p>
+      </div>
+      <div style="padding:24px;background:rgba(255,255,255,0.02);border:1px solid rgba(200,149,58,0.06)">
+        <div class="small-caps" style="font-size:9px;margin-bottom:8px">Brand</div>
+        <p style="font-size:12px;color:rgba(245,242,236,0.5)">Google 3-Pack placement in current territory. Review base established. Content engine running independently.</p>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="h-rule"></div>
+
+<!-- ════════════════════════════════
+     25 · TECHNOLOGY STACK
+════════════════════════════════ -->
+<div id="s25" style="background:var(--midnight)">
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">25</span>
+    <h2 class="section-title">Technology Stack</h2>
+    <div class="section-rule"></div>
+  </div>
+  <p class="italic-lead">Lean, proven, scalable tools. No unnecessary complexity. The stack grows with the business — not ahead of it.</p>
+
+  <div class="stack-layer"><div class="stack-label"><div class="stack-label-text">Website</div></div><div class="stack-tools"><span class="stack-tool">Custom HTML/CSS (Stiaan-built)</span><span class="stack-tool">Hosted via Netlify or Vercel</span><span class="stack-tool">Google Search Console</span><span class="stack-tool">Google Analytics 4</span></div></div>
+  <div class="stack-layer"><div class="stack-label"><div class="stack-label-text">CRM</div></div><div class="stack-tools"><span class="stack-tool">Google Sheets (Launch)</span><span class="stack-tool">HubSpot Free (Growth)</span><span class="stack-tool">Pipedrive (Scale)</span></div></div>
+  <div class="stack-layer"><div class="stack-label"><div class="stack-label-text">Communication</div></div><div class="stack-tools"><span class="stack-tool">WhatsApp Business</span><span class="stack-tool">Gmail (Google Workspace)</span><span class="stack-tool">WhatsApp Business API (future)</span></div></div>
+  <div class="stack-layer"><div class="stack-label"><div class="stack-label-text">Finance</div></div><div class="stack-tools"><span class="stack-tool">Invoicing via Wave (free) or Xero</span><span class="stack-tool">Google Sheets for P&L tracking</span><span class="stack-tool">FNB Business Banking</span></div></div>
+  <div class="stack-layer"><div class="stack-label"><div class="stack-label-text">Design & Content</div></div><div class="stack-tools"><span class="stack-tool">Canva Pro (social content)</span><span class="stack-tool">Lightroom Mobile (photo edit)</span><span class="stack-tool">Figma (proposal layouts)</span></div></div>
+  <div class="stack-layer"><div class="stack-label"><div class="stack-label-text">Project Mgmt</div></div><div class="stack-tools"><span class="stack-tool">Google Calendar (scheduling)</span><span class="stack-tool">WhatsApp Team Group</span><span class="stack-tool">Notion (SOPs + docs at scale)</span></div></div>
+  <div class="stack-layer"><div class="stack-label"><div class="stack-label-text">Analytics</div></div><div class="stack-tools"><span class="stack-tool">Google Business Insights</span><span class="stack-tool">Instagram Analytics</span><span class="stack-tool">Search Console (weekly review)</span></div></div>
+  <div class="stack-layer"><div class="stack-label"><div class="stack-label-text">Future Stack</div></div><div class="stack-tools"><span class="stack-tool">WhatsApp Business API (automated follow-ups)</span><span class="stack-tool">Dedicated job management software</span><span class="stack-tool">Territory dashboard</span></div></div>
+</div>
+</div>
+
+<div class="h-rule"></div>
+
+<!-- ════════════════════════════════
+     26 · KPI DASHBOARD
+════════════════════════════════ -->
+<div id="s26" style="background:var(--section-alt)">
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">26</span>
+    <h2 class="section-title">KPI Dashboard</h2>
+    <div class="section-rule"></div>
+  </div>
+  <p class="italic-lead">What gets measured gets managed. These metrics are reviewed monthly by the founding team and owned by the most relevant domain lead.</p>
+
+  <div class="kpi-grid" style="margin-bottom:2px">
+    <div class="kpi-card"><div class="kpi-label">Monthly New Leads</div><div class="kpi-value"><span>—</span></div><div class="kpi-sub">Target: 10+ qualified leads / month by Month 3</div></div>
+    <div class="kpi-card"><div class="kpi-label">Lead-to-Quote Rate</div><div class="kpi-value"><span>—</span></div><div class="kpi-sub">Target: >70% of leads receive a quote</div></div>
+    <div class="kpi-card"><div class="kpi-label">Quote-to-Close Rate</div><div class="kpi-value"><span>—</span></div><div class="kpi-sub">Target: >40% conversion at premium price point</div></div>
+    <div class="kpi-card"><div class="kpi-label">Monthly Installations</div><div class="kpi-value"><span>—</span></div><div class="kpi-sub">Target: 4–6 jobs/month by Month 3, growing</div></div>
+  </div>
+  <div class="kpi-grid" style="margin-bottom:2px">
+    <div class="kpi-card"><div class="kpi-label">Google Rating</div><div class="kpi-value"><span>—</span>★</div><div class="kpi-sub">Target: Maintain 4.9+ from first review</div></div>
+    <div class="kpi-card"><div class="kpi-label">Google Review Count</div><div class="kpi-value"><span>—</span></div><div class="kpi-sub">Target: 50 reviews by Month 12</div></div>
+    <div class="kpi-card"><div class="kpi-label">Referral Rate</div><div class="kpi-value"><span>—</span>%</div><div class="kpi-sub">Target: >30% of new leads from referral</div></div>
+    <div class="kpi-card"><div class="kpi-label">Avg Job Value</div><div class="kpi-value"><span>—</span></div><div class="kpi-sub">Tracked monthly. Target: premium price maintenance</div></div>
+  </div>
+
+  <div style="overflow-x:auto;margin-top:2px">
+  <table class="pt-table">
+    <thead>
+      <tr><th>KPI</th><th>Owner</th><th>Frequency</th><th>Review Forum</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Lead volume and source breakdown</td><td>Mechanne</td><td>Weekly</td><td>Monthly founder review</td></tr>
+      <tr><td>Quote-to-close rate</td><td>Mechanne + Leon</td><td>Monthly</td><td>Monthly founder review</td></tr>
+      <tr><td>Revenue and P&L</td><td>Leon</td><td>Monthly</td><td>Monthly founder review</td></tr>
+      <tr><td>Google ranking and review count</td><td>Stiaan</td><td>Weekly</td><td>Monthly founder review</td></tr>
+      <tr><td>Social media reach and engagement</td><td>Stiaan</td><td>Weekly</td><td>Monthly founder review</td></tr>
+      <tr><td>Installation quality score (client satisfaction)</td><td>Stefan</td><td>Per job</td><td>Monthly founder review</td></tr>
+      <tr><td>Website traffic and enquiry source</td><td>Stiaan</td><td>Monthly</td><td>Monthly founder review</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+</div>
+
+<div class="h-rule"></div>
+
+<!-- ════════════════════════════════
+     27 · RISK MANAGEMENT
+════════════════════════════════ -->
+<div id="s27" style="background:var(--midnight)">
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">27</span>
+    <h2 class="section-title">Risk Management</h2>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="risk-item">
+    <div><div class="risk-name">Single supplier dependency</div><div class="risk-mitigation">Identify and qualify at least two approved turf suppliers. Maintain buffer stock of high-moving products. Supplier relationships managed by Leon.</div></div>
+    <div class="risk-badge med">Medium</div>
+  </div>
+  <div class="risk-item">
+    <div><div class="risk-name">Installation quality failure</div><div class="risk-mitigation">Stefan's QC checklist mandatory on every job. Workmanship guarantee builds client confidence. Immediate remediation policy for any complaint.</div></div>
+    <div class="risk-badge low">Low</div>
+  </div>
+  <div class="risk-item">
+    <div><div class="risk-name">Negative Google review</div><div class="risk-mitigation">Proactive satisfaction check before client reaches review stage. All negative reviews responded to professionally within 48 hours. Review volume dilutes occasional negative.</div></div>
+    <div class="risk-badge med">Medium</div>
+  </div>
+  <div class="risk-item">
+    <div><div class="risk-name">Key person dependency (Stefan)</div><div class="risk-mitigation">Document all installation processes as SOPs. Train crew member early. Stefan trains a deputy in Phase 2.</div></div>
+    <div class="risk-badge high">High — Address in Year 1</div>
+  </div>
+  <div class="risk-item">
+    <div><div class="risk-name">Economic downturn reducing premium spend</div><div class="risk-mitigation">Premium clients are less economically sensitive than mid-market. Commercial segment provides diversification. Maintenance packages provide recurring revenue resilience.</div></div>
+    <div class="risk-badge med">Medium</div>
+  </div>
+  <div class="risk-item">
+    <div><div class="risk-name">Competitor copying the brand</div><div class="risk-mitigation">Brand is a moat. Review base, client relationships, and quality reputation take years to replicate. Register PrimeTurf trademark early. Consistent brand enforcement.</div></div>
+    <div class="risk-badge low">Low</div>
+  </div>
+  <div class="risk-item">
+    <div><div class="risk-name">Cash flow — delayed client payments</div><div class="risk-mitigation">50% deposit required before installation commences. Balance payable on completion. No exceptions. Payment terms in all contracts.</div></div>
+    <div class="risk-badge med">Medium</div>
+  </div>
+  <div class="risk-item">
+    <div><div class="risk-name">Founder alignment breakdown</div><div class="risk-mitigation">Clear authority matrix prevents overlap. Monthly founder review forum. Decisions escalate to Leon per matrix. Clear domain ownership reduces friction.</div></div>
+    <div class="risk-badge low">Low</div>
+  </div>
+</div>
+</div>
+
+<div class="h-rule"></div>
+
+<!-- ════════════════════════════════
+     28 · ALIGNED INCENTIVES
+════════════════════════════════ -->
+<div id="s28" style="background:var(--section-alt)">
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">28</span>
+    <h2 class="section-title">Aligned Incentives & Shared Upside</h2>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="principle-block" style="margin-bottom:48px">
+    <div class="principle-text">"As PrimeTurf grows, the people helping build it should grow with it. Value is created together. Reward must follow contribution."</div>
+    <div class="principle-attr">PrimeTurf · Founding Compensation Principle</div>
+  </div>
+
+  <p style="font-size:13px;color:rgba(245,242,236,0.5);line-height:1.9;max-width:760px;margin-bottom:40px">PrimeTurf operates on an aligned incentives model during the founding stage. Rather than fixed commissions that create rigid cost structures, the framework is built on shared upside — everyone grows as the company grows. Specific structures are agreed between founders based on contribution, role, and the company's financial reality at each stage.</p>
+
+  <div class="tier-grid">
+    <div class="tier-card">
+      <div class="tier-label">Founding Stage</div>
+      <div class="tier-name">Build Mode</div>
+      <div class="tier-divider"></div>
+      <div class="tier-item">Contribution is recognised through equity-equivalent arrangements, deferred reward, or agreed draw structures based on company revenue</div>
+      <div class="tier-item">All founders sacrifice short-term for long-term upside</div>
+      <div class="tier-item">Every rand reinvested in the system creates compound future value</div>
+      <div class="tier-item">Non-financial benefits: ownership of domain, career equity, future opportunity</div>
+    </div>
+    <div class="tier-card featured">
+      <div class="tier-label">Growth Stage</div>
+      <div class="tier-name">Earn Mode</div>
+      <div class="tier-divider"></div>
+      <div class="tier-item">As revenue stabilises, agreed draw structures formalised per founder role and contribution level</div>
+      <div class="tier-item">Performance milestones unlock increased participation in company value</div>
+      <div class="tier-item">Growth achievements create defined bonus events tied to territory wins, volume thresholds, and brand milestones</div>
+      <div class="tier-item">Reviewed quarterly. Adjusted as company finances allow.</div>
+    </div>
+    <div class="tier-card">
+      <div class="tier-label">Scale Stage</div>
+      <div class="tier-name">Compound Mode</div>
+      <div class="tier-divider"></div>
+      <div class="tier-item">Territory expansion creates new participation opportunities for founding team members</div>
+      <div class="tier-item">Franchise or licensing model creates asset-value events beyond operational income</div>
+      <div class="tier-item">Founders who built the system own a proportionate piece of what the system becomes</div>
+      <div class="tier-item">Value at exit or partial sale distributed per founding agreements</div>
+    </div>
+  </div>
+
+  <div style="margin-top:32px;background:rgba(200,149,58,0.05);border:1px solid rgba(200,149,58,0.2);padding:40px">
+    <div class="small-caps" style="margin-bottom:20px">Incentive Design Principles</div>
+    <div class="card-grid-4" style="gap:24px">
+      <div><div class="small-caps" style="font-size:9px;margin-bottom:8px">Performance</div><p style="font-size:12px;color:rgba(245,242,236,0.5)">Reward is proportional to measurable contribution and outcomes, not just effort or time.</p></div>
+      <div><div class="small-caps" style="font-size:9px;margin-bottom:8px">Sustainability</div><p style="font-size:12px;color:rgba(245,242,236,0.5)">No structure should compromise the company's ability to reinvest in growth or weather a slow period.</p></div>
+      <div><div class="small-caps" style="font-size:9px;margin-bottom:8px">Transparency</div><p style="font-size:12px;color:rgba(245,242,236,0.5)">All founders have visibility into P&L. No information asymmetry. Trust is the foundation of every arrangement.</p></div>
+      <div><div class="small-caps" style="font-size:9px;margin-bottom:8px">Future Opportunity</div><p style="font-size:12px;color:rgba(245,242,236,0.5)">The greatest incentive is the opportunity to own and lead a nationally recognised brand. This document is the map to that outcome.</p></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="h-rule"></div>
+
+<!-- ════════════════════════════════
+     29 · FUTURE GROWTH OPPORTUNITIES
+════════════════════════════════ -->
+<div id="s29" style="background:var(--midnight)">
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">29</span>
+    <h2 class="section-title">Future Growth Opportunities</h2>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="card-grid-3">
+    <div class="card card-forest">
+      <div class="card-label">Revenue Stream</div>
+      <div class="card-title">Recurring Maintenance</div>
+      <div class="card-body">Annual maintenance contracts on all installed areas. Predictable revenue, high margin, zero acquisition cost. Target: 40% of installed clients on maintenance contracts within 18 months.</div>
+    </div>
+    <div class="card card-forest">
+      <div class="card-label">Revenue Stream</div>
+      <div class="card-title">Commercial Tenders</div>
+      <div class="card-body">Formal tender processes for schools, corporate campuses, and government facilities. Larger contracts with longer lead times but significant volume and repeatable relationship value.</div>
+    </div>
+    <div class="card card-forest">
+      <div class="card-label">Revenue Stream</div>
+      <div class="card-title">Estate Management Partnerships</div>
+      <div class="card-body">Preferred supplier agreements with estate management companies across Pretoria East. Single relationship unlocks dozens of individual homeowner opportunities.</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Business Model</div>
+      <div class="card-title">Franchise / Licensing</div>
+      <div class="card-body">Once the PrimeTurf system is proven and documented, the model can be licensed to territory operators. Royalty income. Brand growth without operational risk. National scale with local execution.</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Product Extension</div>
+      <div class="card-title">Full Outdoor Design</div>
+      <div class="card-body">Expand from turf specialist to full outdoor transformation service. Decking, paving, lighting, water features, outdoor furniture partnerships. Premium one-stop outdoor renovation offering.</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Digital Asset</div>
+      <div class="card-title">Brand & IP Value</div>
+      <div class="card-body">A nationally recognised premium brand has standalone value as an asset. Acquisition interest, licensing, or co-branding opportunities grow as recognition and domain authority compound.</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="h-rule"></div>
+
+<!-- ════════════════════════════════
+     30 · 5-YEAR ROADMAP
+════════════════════════════════ -->
+<div id="s30" style="background:var(--section-alt)">
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">30</span>
+    <h2 class="section-title">5-Year Expansion Roadmap</h2>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="roadmap">
+    <div class="roadmap-item">
+      <div class="roadmap-dot active"></div>
+      <div class="roadmap-phase">Year 1 · Foundation</div>
+      <div class="roadmap-title">Pretoria East Domination — Phase 1</div>
+      <div class="roadmap-body">Brand launched. Website live. Google Business Profile active and growing. First 20–30 installations completed. Before/after library under construction. Referral engine activated. First crew member trained. All founding systems operational and tested. 50 Google reviews milestone targeted.</div>
+      <div class="roadmap-tags"><span class="rtag">Brand Launch</span><span class="rtag">20–30 Installs</span><span class="rtag">50 Reviews</span><span class="rtag">System Build</span><span class="rtag">Google 3-Pack Target</span></div>
+    </div>
+
+    <div class="roadmap-item">
+      <div class="roadmap-dot"></div>
+      <div class="roadmap-phase">Year 2 · Growth</div>
+      <div class="roadmap-title">Pretoria East Ownership</div>
+      <div class="roadmap-body">Full suburb coverage across target Pretoria East areas. Second crew operational. Maintenance contract base established. 80+ Google reviews. SEO driving consistent inbound leads. Commercial segment growing. Waiting list for peak slots. Systems documented and delegatable. Expansion readiness assessed.</div>
+      <div class="roadmap-tags"><span class="rtag">Full Coverage</span><span class="rtag">2 Crews</span><span class="rtag">Maintenance Revenue</span><span class="rtag">Expansion Ready</span></div>
+    </div>
+
+    <div class="roadmap-item">
+      <div class="roadmap-dot"></div>
+      <div class="roadmap-phase">Year 3 · Expansion</div>
+      <div class="roadmap-title">Greater Pretoria Territory</div>
+      <div class="roadmap-body">Centurion and greater Pretoria market entry. Territory lead hired and trained. Pretoria East continues operating with reduced founder involvement. Commercial tender wins expanding brand profile. Potential JHB North investigation begins. CRM upgraded to dedicated platform.</div>
+      <div class="roadmap-tags"><span class="rtag">New Territory</span><span class="rtag">Territory Lead</span><span class="rtag">Commercial Tenders</span><span class="rtag">JHB Research</span></div>
+    </div>
+
+    <div class="roadmap-item">
+      <div class="roadmap-dot"></div>
+      <div class="roadmap-phase">Year 4 · Scale</div>
+      <div class="roadmap-title">Johannesburg North Entry</div>
+      <div class="roadmap-body">Sandton, Fourways, Hyde Park, Bryanston. High-value residential market. Premium brand positioning established nationally. Franchise model documentation underway. Partnership with national estate management groups formalised. National PR and brand recognition campaign.</div>
+      <div class="roadmap-tags"><span class="rtag">JHB North Launch</span><span class="rtag">Franchise Docs</span><span class="rtag">National Visibility</span><span class="rtag">Estate Partnerships</span></div>
+    </div>
+
+    <div class="roadmap-item">
+      <div class="roadmap-dot"></div>
+      <div class="roadmap-phase">Year 5 · National</div>
+      <div class="roadmap-title">Multi-Territory Brand</div>
+      <div class="roadmap-body">PrimeTurf operating across 3–5 territories. Cape Town coastal market entry considered. Franchise model live or in advanced development. Brand recognised as South Africa's premium outdoor transformation standard. Founding team operating as strategic leadership rather than operational delivery. Asset value realised.</div>
+      <div class="roadmap-tags"><span class="rtag">3–5 Territories</span><span class="rtag">Franchise Model</span><span class="rtag">National Brand</span><span class="rtag">Asset Value</span><span class="rtag">Strategic Leadership</span></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="h-rule"></div>
+
+<!-- ════════════════════════════════
+     31 · CLOSING FOUNDER VISION
+════════════════════════════════ -->
+<div id="s31" style="background:var(--midnight)">
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">31</span>
+    <h2 class="section-title">Closing Founder Vision</h2>
+    <div class="section-rule"></div>
+  </div>
+
+  <div style="max-width:800px;margin:0 auto;text-align:center;padding:40px 0 80px">
+    <div style="width:80px;height:80px;border:1px solid rgba(200,149,58,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 48px;position:relative">
+      <div style="position:absolute;inset:-8px;border:1px solid rgba(200,149,58,0.1);border-radius:50%"></div>
+      <svg width="36" height="36" viewBox="0 0 60 60" fill="none">
+        <text x="2" y="44" font-family="Cinzel, serif" font-size="30" font-weight="700" fill="#C8953A">P</text>
+        <text x="24" y="44" font-family="Cinzel, serif" font-size="30" font-weight="700" fill="#F5F2EC">T</text>
+        <path d="M14 26 Q12 18 10 12" stroke="#4CAF65" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <path d="M16 26 Q16 16 16 10" stroke="#4CAF65" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <path d="M18 26 Q20 18 22 12" stroke="#4CAF65" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <p style="font-family:'Cormorant Garamond',serif;font-size:clamp(24px,3.5vw,40px);font-weight:300;font-style:italic;line-height:1.4;color:var(--warm-white);margin-bottom:40px">We are not building a landscaping company. We are building <span class="gold">South Africa's most trusted premium outdoor transformation brand.</span></p>
+
+    <div style="width:1px;height:60px;background:linear-gradient(to bottom,transparent,rgba(200,149,58,0.5),transparent);margin:0 auto 48px"></div>
+
+    <p style="font-size:14px;color:rgba(245,242,236,0.45);line-height:2;letter-spacing:0.08em;max-width:640px;margin:0 auto 48px">Every installation we complete in Pretoria East is a statement. Every review we earn is a proof point. Every referral we receive is a trust signal. Every suburb we enter is a territory claimed. This is not a small business. This is the beginning of a national brand — built one installation at a time, one relationship at a time, one suburb at a time.</p>
+
+    <div style="display:flex;flex-direction:column;gap:20px;align-items:center;margin-bottom:60px">
+      <div class="principle-block" style="text-align:left;max-width:560px;width:100%">
+        <div class="principle-text" style="font-size:18px">"Dominate Pretoria East before expanding. Build systems before scaling. Deliver exceptional client experiences. Create a repeatable premium outdoor transformation model."</div>
+        <div class="principle-attr">PrimeTurf Mission</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:2px;max-width:640px;margin:0 auto">
+      <div style="padding:24px 16px;background:rgba(26,58,42,0.2);border:1px solid rgba(200,149,58,0.1);text-align:center">
+        <div class="small-caps" style="font-size:9px;margin-bottom:8px">Leon</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:14px;font-style:italic;color:rgba(245,242,236,0.5)">Direction</div>
+      </div>
+      <div style="padding:24px 16px;background:rgba(26,58,42,0.2);border:1px solid rgba(200,149,58,0.1);text-align:center">
+        <div class="small-caps" style="font-size:9px;margin-bottom:8px">Mechanne</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:14px;font-style:italic;color:rgba(245,242,236,0.5)">Experience</div>
+      </div>
+      <div style="padding:24px 16px;background:rgba(26,58,42,0.2);border:1px solid rgba(200,149,58,0.1);text-align:center">
+        <div class="small-caps" style="font-size:9px;margin-bottom:8px">Stefan</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:14px;font-style:italic;color:rgba(245,242,236,0.5)">Excellence</div>
+      </div>
+      <div style="padding:24px 16px;background:rgba(26,58,42,0.2);border:1px solid rgba(200,149,58,0.1);text-align:center">
+        <div class="small-caps" style="font-size:9px;margin-bottom:8px">Stiaan</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:14px;font-style:italic;color:rgba(245,242,236,0.5)">Growth</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════ FOOTER ════ -->
+<div class="brand-footer">
+  <div class="footer-logo">Prime<span>Turf</span></div>
+  <div class="footer-sub">Luxury Living · Lifestyle Enhancement</div>
+  <div class="footer-declaration">
+    This document is the operational source of truth for PrimeTurf.<br>
+    All strategic, operational, and growth decisions are anchored here.<br>
+    It evolves with the company. It is reviewed quarterly.<br>
+    Final authority rests with Leon van Eeden.
+  </div>
+  <div class="footer-stamp">Master Blueprint · Document 02 · Founders Only</div>
+  <div style="margin-top:48px;font-size:11px;color:rgba(245,242,236,0.12);letter-spacing:0.2em">Pretoria East · South Africa · PrimeTurf © · Built by Stiaan du Plessis</div>
+</div>
 
 </body>
 </html>
