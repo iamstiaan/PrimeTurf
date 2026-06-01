@@ -8,349 +8,413 @@
 <style>
 :root{
   --forest:#1A3A2A; --green:#4CAF65; --gold:#C8953A;
-  --gold-l:#E8B86D; --warm:#F5F2EC; --ink:#0D0D0B;
-  --danger:#E05555; --mid-forest:rgba(26,58,42,0.2);
+  --gold-l:#E8B86D; --warm:#F5F2EC; --ink:#0A0A08;
+  --danger:#E05555; --slate:#161614;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
 body{background:var(--ink);color:var(--warm);font-family:'Montserrat',sans-serif;font-weight:300;line-height:1.7;overflow-x:hidden;}
-body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9000;}
 
-/* ══ HERO — MISSION CONTROL ══ */
-.hero{min-height:100vh;position:relative;display:flex;flex-direction:column;justify-content:center;overflow:hidden;background:var(--ink);}
-.hero-grid-bg{position:absolute;inset:0;
+/* NOISE LAYER */
+body::after{content:'';position:fixed;inset:0;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='.025'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:9000;}
+
+/* ═══════════════════════════════════════
+   HERO — MISSION CONTROL
+═══════════════════════════════════════ */
+.hero{min-height:100vh;position:relative;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;background:var(--ink);}
+
+.hero-grid{position:absolute;inset:0;
   background-image:
-    repeating-linear-gradient(0deg,transparent,transparent 59px,rgba(200,149,58,0.04) 59px,rgba(200,149,58,0.04) 60px),
-    repeating-linear-gradient(90deg,transparent,transparent 59px,rgba(200,149,58,0.04) 59px,rgba(200,149,58,0.04) 60px);
-}
-.hero-glow{position:absolute;inset:0;
+    repeating-linear-gradient(0deg,transparent,transparent 79px,rgba(200,149,58,0.035) 79px,rgba(200,149,58,0.035) 80px),
+    repeating-linear-gradient(90deg,transparent,transparent 79px,rgba(200,149,58,0.035) 79px,rgba(200,149,58,0.035) 80px);}
+
+.hero-atmosphere{position:absolute;inset:0;
   background:
-    radial-gradient(ellipse 65% 55% at 15% 50%, rgba(26,58,42,0.7) 0%, transparent 65%),
-    radial-gradient(ellipse 45% 65% at 85% 25%, rgba(200,149,58,0.07) 0%, transparent 55%);
-}
-.hero-inner{position:relative;z-index:10;padding:80px 80px 60px;max-width:1400px;margin:0 auto;width:100%;}
-.hero-top-line{display:flex;align-items:center;gap:24px;margin-bottom:72px;}
-.hero-doc-badge{font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.5em;color:var(--gold);border:1px solid rgba(200,149,58,0.3);padding:7px 22px;text-transform:uppercase;}
-.hero-doc-sep{flex:1;height:1px;background:linear-gradient(to right,rgba(200,149,58,0.2),transparent);}
-.hero-doc-meta{font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.3em;color:rgba(245,242,236,0.2);text-transform:uppercase;}
+    radial-gradient(ellipse 80% 70% at 5% 50%, rgba(26,58,42,0.75) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 60% at 95% 10%, rgba(200,149,58,0.06) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(0,0,0,0.8) 0%, transparent 60%);}
 
-.hero-center{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;margin-bottom:72px;}
-.hero-left{}
-.hero-brand{font-family:'Cinzel',serif;font-size:clamp(60px,9vw,110px);font-weight:700;letter-spacing:0.08em;line-height:0.88;margin-bottom:20px;}
-.hero-brand span{color:var(--gold);}
-.hero-descriptor{font-family:'Cormorant Garamond',serif;font-size:clamp(16px,2.5vw,24px);font-weight:300;font-style:italic;letter-spacing:0.25em;color:rgba(245,242,236,0.45);text-transform:uppercase;margin-bottom:6px;}
-.hero-precision{font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.5em;color:rgba(200,149,58,0.45);text-transform:uppercase;margin-bottom:40px;}
-.hero-tagline{font-family:'Cinzel',serif;font-size:clamp(13px,1.6vw,17px);letter-spacing:0.28em;text-transform:uppercase;color:var(--warm);margin-bottom:8px;}
-.hero-sub-tagline{font-size:12px;letter-spacing:0.25em;color:rgba(245,242,236,0.3);text-transform:uppercase;}
+.hero-scan{position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,rgba(200,149,58,0.4),transparent);animation:scan 8s ease-in-out infinite;}
+@keyframes scan{0%,100%{top:0%;opacity:0;}10%{opacity:1;}90%{opacity:0.5;}100%{top:100%;}}
 
-.hero-right{display:grid;grid-template-columns:1fr 1fr;gap:2px;}
-.hero-stat{padding:28px 24px;background:rgba(26,58,42,0.25);border:1px solid rgba(200,149,58,0.1);text-align:center;transition:all 0.3s;}
-.hero-stat:hover{background:rgba(26,58,42,0.5);border-color:rgba(200,149,58,0.3);}
-.hs-val{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:var(--gold);line-height:1;margin-bottom:8px;}
-.hs-label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.35em;text-transform:uppercase;color:rgba(245,242,236,0.4);}
+.hero-inner{position:relative;z-index:10;padding:0 80px 80px;max-width:1500px;margin:0 auto;width:100%;}
 
-.hero-team{display:flex;gap:0;border:1px solid rgba(200,149,58,0.1);}
-.team-member{flex:1;padding:20px 28px;background:rgba(0,0,0,0.2);border-right:1px solid rgba(200,149,58,0.06);}
-.team-member:last-child{border-right:none;}
+/* Top strip */
+.hero-strip{display:flex;align-items:center;gap:0;border-bottom:1px solid rgba(200,149,58,0.12);padding:28px 80px;position:relative;z-index:10;max-width:100%;}
+.hs-badge{font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.5em;color:var(--gold);text-transform:uppercase;padding-right:32px;border-right:1px solid rgba(200,149,58,0.2);}
+.hs-meta{font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.35em;color:rgba(245,242,236,0.2);text-transform:uppercase;padding-left:32px;}
+.hs-flex{flex:1;}
+.hs-doc{font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.35em;color:rgba(200,149,58,0.4);text-transform:uppercase;text-align:right;}
+
+/* Hero content */
+.hero-content{display:grid;grid-template-columns:1fr 520px;gap:80px;align-items:flex-end;padding-top:120px;}
+
+.hero-wordmark{font-family:'Cinzel',serif;font-size:clamp(72px,11vw,140px);font-weight:700;letter-spacing:0.06em;line-height:0.85;margin-bottom:24px;}
+.hero-wordmark .gold{color:var(--gold);}
+.hero-sub1{font-family:'Cormorant Garamond',serif;font-size:clamp(18px,2.8vw,28px);font-weight:300;font-style:italic;letter-spacing:0.2em;color:rgba(245,242,236,0.4);text-transform:uppercase;margin-bottom:8px;}
+.hero-sub2{font-family:'Cinzel',serif;font-size:12px;letter-spacing:0.5em;color:rgba(200,149,58,0.4);text-transform:uppercase;margin-bottom:48px;}
+.hero-tagline{font-family:'Cinzel',serif;font-size:clamp(14px,1.8vw,20px);letter-spacing:0.3em;text-transform:uppercase;color:var(--warm);margin-bottom:6px;}
+.hero-subtag{font-size:11px;letter-spacing:0.28em;color:rgba(245,242,236,0.25);text-transform:uppercase;}
+
+/* Hero right — 4 stat cards */
+.hero-stats{display:grid;grid-template-columns:1fr 1fr;gap:2px;}
+.hstat{padding:32px 24px;border:1px solid rgba(200,149,58,0.1);background:rgba(26,58,42,0.2);text-align:center;transition:all 0.4s;}
+.hstat:hover{background:rgba(26,58,42,0.4);border-color:rgba(200,149,58,0.3);}
+.hstat-val{font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:300;color:var(--gold);line-height:1;margin-bottom:8px;}
+.hstat-lbl{font-family:'Cinzel',serif;font-size:8px;letter-spacing:0.38em;text-transform:uppercase;color:rgba(245,242,236,0.35);}
+
+/* Team strip */
+.hero-team{display:flex;gap:0;border:1px solid rgba(200,149,58,0.08);margin-top:48px;}
+.tm{flex:1;padding:22px 28px;border-right:1px solid rgba(200,149,58,0.06);}
+.tm:last-child{border-right:none;}
 .tm-name{font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.15em;color:var(--warm);margin-bottom:4px;}
-.tm-role{font-size:10px;letter-spacing:0.1em;color:rgba(200,149,58,0.5);text-transform:uppercase;}
+.tm-role{font-size:10px;letter-spacing:0.1em;color:rgba(200,149,58,0.45);text-transform:uppercase;}
 
-/* ══ COMMAND CENTER ══ */
-.command-center{background:rgba(0,0,0,0.45);border-top:1px solid rgba(200,149,58,0.15);border-bottom:1px solid rgba(200,149,58,0.15);}
-.cc-inner{padding:72px 80px;max-width:1400px;margin:0 auto;}
-.cc-header{display:flex;align-items:baseline;gap:24px;margin-bottom:48px;}
-.cc-title{font-family:'Cinzel',serif;font-size:clamp(22px,3vw,36px);font-weight:600;letter-spacing:0.15em;text-transform:uppercase;}
-.cc-date{font-family:'Cinzel',serif;font-size:10px;letter-spacing:0.4em;color:rgba(200,149,58,0.5);text-transform:uppercase;margin-left:auto;}
+/* ═══════════════════════════════════════
+   COMMAND CENTER — DOMINANT OPENING
+═══════════════════════════════════════ */
+.command-center{background:var(--slate);border-top:2px solid rgba(200,149,58,0.2);position:relative;overflow:hidden;}
+.cc-bg-grid{position:absolute;inset:0;
+  background-image:
+    repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(200,149,58,0.025) 39px,rgba(200,149,58,0.025) 40px),
+    repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(200,149,58,0.025) 39px,rgba(200,149,58,0.025) 40px);}
+.cc-atmosphere{position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 80% at 0% 50%, rgba(26,58,42,0.3) 0%, transparent 55%);}
 
-.cc-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-bottom:48px;}
-.cc-panel{padding:40px 36px;border:1px solid;}
-.cc-panel.active{background:rgba(200,149,58,0.06);border-color:rgba(200,149,58,0.25);}
-.cc-panel.pending{background:rgba(26,58,42,0.12);border-color:rgba(200,149,58,0.1);}
-.cc-panel-label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.45em;text-transform:uppercase;margin-bottom:24px;}
-.cc-panel.active .cc-panel-label{color:var(--gold);}
-.cc-panel.pending .cc-panel-label{color:rgba(245,242,236,0.35);}
+.cc-inner{position:relative;z-index:2;padding:100px 80px;max-width:1500px;margin:0 auto;}
 
-.task{display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid rgba(200,149,58,0.05);}
+/* CC Header */
+.cc-head{display:flex;align-items:baseline;gap:32px;margin-bottom:80px;}
+.cc-eyebrow{font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.55em;color:rgba(200,149,58,0.5);text-transform:uppercase;}
+.cc-title{font-family:'Cinzel',serif;font-size:clamp(36px,5vw,64px);font-weight:700;letter-spacing:0.1em;text-transform:uppercase;line-height:0.9;}
+.cc-title .gold{color:var(--gold);}
+.cc-rule{flex:1;height:1px;background:linear-gradient(to right,rgba(200,149,58,0.25),transparent);margin-left:20px;}
+.cc-date{font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.4em;color:rgba(200,149,58,0.4);text-transform:uppercase;white-space:nowrap;}
+
+/* Status panels */
+.cc-panels{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-bottom:2px;}
+
+.cc-panel{padding:48px 44px;border:1px solid;}
+.cc-panel.done{background:rgba(26,58,42,0.2);border-color:rgba(76,175,101,0.2);}
+.cc-panel.next{background:rgba(200,149,58,0.04);border-color:rgba(200,149,58,0.18);}
+
+.cc-panel-label{display:flex;align-items:center;gap:16px;font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.48em;text-transform:uppercase;margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid;}
+.cc-panel.done .cc-panel-label{color:var(--green);border-color:rgba(76,175,101,0.15);}
+.cc-panel.next .cc-panel-label{color:var(--gold);border-color:rgba(200,149,58,0.12);}
+
+.task{display:flex;align-items:center;gap:16px;padding:12px 0;border-bottom:1px solid rgba(200,149,58,0.04);}
 .task:last-child{border-bottom:none;}
-.task-check{width:20px;height:20px;border:1.5px solid;border-radius:2px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;}
-.task-check.done{border-color:var(--green);background:rgba(76,175,101,0.15);color:var(--green);}
-.task-check.todo{border-color:rgba(200,149,58,0.35);color:transparent;}
-.task-text{font-size:13px;letter-spacing:0.05em;}
-.task.done-task .task-text{color:rgba(245,242,236,0.55);}
-.task.todo-task .task-text{color:var(--warm);}
+.task-box{width:22px;height:22px;border:1.5px solid;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;}
+.task-box.done{border-color:var(--green);background:rgba(76,175,101,0.12);color:var(--green);}
+.task-box.todo{border-color:rgba(200,149,58,0.3);color:transparent;}
+.task-text{font-size:13px;letter-spacing:0.04em;}
+.task.is-done .task-text{color:rgba(245,242,236,0.45);}
+.task.is-todo .task-text{color:var(--warm);}
 
-/* Priority today banner */
-.priority-banner{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;}
-.pb-card{padding:32px 28px;border:1px solid rgba(200,149,58,0.12);background:rgba(200,149,58,0.04);position:relative;overflow:hidden;}
-.pb-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold);}
-.pb-num{font-family:'Cormorant Garamond',serif;font-size:48px;font-weight:300;color:var(--gold);line-height:1;margin-bottom:8px;}
-.pb-title{font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.25em;text-transform:uppercase;color:var(--warm);margin-bottom:8px;}
-.pb-action{font-size:12px;color:rgba(245,242,236,0.4);line-height:1.7;}
+/* Priority banner — 3 cards */
+.cc-priority{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;}
+.pb{padding:44px 40px;border:1px solid rgba(200,149,58,0.1);background:rgba(0,0,0,0.3);position:relative;overflow:hidden;transition:all 0.4s;}
+.pb:hover{background:rgba(26,58,42,0.18);border-color:rgba(200,149,58,0.25);}
+.pb::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(to right,var(--gold),var(--gold-l));}
+.pb-num{font-family:'Cormorant Garamond',serif;font-size:64px;font-weight:300;color:rgba(200,149,58,0.15);line-height:1;position:absolute;top:28px;right:32px;}
+.pb-period{font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.48em;color:var(--gold);text-transform:uppercase;margin-bottom:12px;}
+.pb-title{font-family:'Cinzel',serif;font-size:15px;letter-spacing:0.18em;text-transform:uppercase;color:var(--warm);margin-bottom:16px;}
+.pb-action{font-size:12px;color:rgba(245,242,236,0.45);line-height:1.85;}
 
-/* ══ NAV BAR ══ */
-.doc-nav{position:sticky;top:0;z-index:500;background:rgba(13,13,11,0.94);backdrop-filter:blur(12px);border-bottom:1px solid rgba(200,149,58,0.1);}
+/* ═══════════════════════════════════════
+   NAV
+═══════════════════════════════════════ */
+.doc-nav{position:sticky;top:0;z-index:500;background:rgba(10,10,8,0.95);backdrop-filter:blur(16px);border-bottom:1px solid rgba(200,149,58,0.1);}
 .nav-inner{display:flex;align-items:center;justify-content:space-between;height:60px;padding:0 60px;}
-.nav-logo{font-family:'Cinzel',serif;font-size:14px;font-weight:600;letter-spacing:0.22em;}
-.nav-logo span{color:var(--gold);}
+.nav-logo{font-family:'Cinzel',serif;font-size:13px;font-weight:600;letter-spacing:0.22em;}
+.nav-logo .gold{color:var(--gold);}
+.nav-tag{color:rgba(245,242,236,0.15);margin-left:10px;font-size:9px;letter-spacing:0.3em;}
 .nav-links{display:flex;gap:0;}
-.nav-link{font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.3em;color:rgba(245,242,236,0.3);text-transform:uppercase;text-decoration:none;padding:0 16px;height:60px;display:flex;align-items:center;border-bottom:2px solid transparent;transition:all 0.3s;}
+.nav-link{font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.28em;color:rgba(245,242,236,0.28);text-transform:uppercase;text-decoration:none;padding:0 14px;height:60px;display:flex;align-items:center;border-bottom:2px solid transparent;transition:all 0.3s;}
 .nav-link:hover{color:var(--gold);border-bottom-color:var(--gold);}
-@media(max-width:1000px){.nav-links{display:none;}}
 
-/* ══ SECTION STRUCTURE ══ */
-.section{padding:100px 80px;max-width:1400px;margin:0 auto;}
-.section-header{margin-bottom:64px;}
-.s-eyebrow{font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.5em;color:var(--gold);text-transform:uppercase;opacity:0.6;margin-bottom:14px;}
-.s-title{font-family:'Cinzel',serif;font-size:clamp(24px,3.5vw,40px);font-weight:600;letter-spacing:0.12em;text-transform:uppercase;line-height:1;margin-bottom:20px;}
-.s-rule{width:72px;height:2px;background:linear-gradient(to right,var(--gold),transparent);}
-.s-sub{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;font-style:italic;color:rgba(245,242,236,0.45);max-width:640px;margin-top:18px;line-height:1.65;}
+/* ═══════════════════════════════════════
+   SECTION STRUCTURE
+═══════════════════════════════════════ */
+.section{padding:100px 80px;max-width:1500px;margin:0 auto;}
+.section-header{margin-bottom:72px;}
+.s-eyebrow{font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.52em;color:var(--gold);text-transform:uppercase;opacity:0.6;margin-bottom:16px;}
+.s-title{font-family:'Cinzel',serif;font-size:clamp(26px,3.5vw,42px);font-weight:600;letter-spacing:0.1em;text-transform:uppercase;line-height:1;margin-bottom:20px;}
+.s-rule{width:80px;height:2px;background:linear-gradient(to right,var(--gold),transparent);}
+.s-sub{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:300;font-style:italic;color:rgba(245,242,236,0.4);max-width:640px;margin-top:20px;line-height:1.65;}
 
 /* BG VARIANTS */
 .bg-dark{background:var(--ink);}
-.bg-forest{background:rgba(26,58,42,0.07);}
-.bg-black{background:rgba(0,0,0,0.3);}
-.h-rule{height:1px;background:linear-gradient(to right,transparent,rgba(200,149,58,0.22),transparent);}
+.bg-forest{background:rgba(26,58,42,0.06);}
+.bg-slate{background:var(--slate);}
+.h-rule{height:1px;background:linear-gradient(to right,transparent,rgba(200,149,58,0.2),transparent);}
 
-/* GRID HELPERS */
+/* GRID */
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:2px;}
 .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;}
 .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;}
 
 /* CARDS */
-.card{background:rgba(255,255,255,0.018);border:1px solid rgba(200,149,58,0.07);padding:40px;transition:all 0.35s;position:relative;overflow:hidden;}
-.card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(to right,transparent,var(--gold),transparent);transform:scaleX(0);transition:transform 0.35s;}
+.card{background:rgba(255,255,255,0.015);border:1px solid rgba(200,149,58,0.07);padding:40px;transition:all 0.35s;position:relative;overflow:hidden;}
+.card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(to right,transparent,var(--gold),transparent);transform:scaleX(0);transition:transform 0.4s;}
 .card:hover::after{transform:scaleX(1);}
-.card:hover{background:rgba(26,58,42,0.18);border-color:rgba(200,149,58,0.22);}
+.card:hover{background:rgba(26,58,42,0.15);border-color:rgba(200,149,58,0.2);}
 .card-label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.45em;color:var(--gold);text-transform:uppercase;margin-bottom:14px;}
 .card-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--warm);margin-bottom:10px;}
-.card-body{font-size:13px;color:rgba(245,242,236,0.5);line-height:1.85;}
+.card-body{font-size:13px;color:rgba(245,242,236,0.48);line-height:1.85;}
 
-/* KPI CARDS */
+/* KPI */
 .kpi{padding:32px 26px;background:rgba(0,0,0,0.22);border:1px solid rgba(200,149,58,0.08);border-top:3px solid var(--gold);}
 .kpi-val{font-family:'Cormorant Garamond',serif;font-size:44px;font-weight:300;color:var(--gold);line-height:1;margin-bottom:6px;}
-.kpi-name{font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.38em;text-transform:uppercase;color:rgba(245,242,236,0.55);margin-bottom:6px;}
-.kpi-tgt{font-size:11px;color:rgba(245,242,236,0.3);letter-spacing:0.08em;}
+.kpi-name{font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.38em;text-transform:uppercase;color:rgba(245,242,236,0.5);margin-bottom:6px;}
+.kpi-tgt{font-size:11px;color:rgba(245,242,236,0.28);letter-spacing:0.06em;}
 
 /* PROCESS FLOW */
 .process-flow{display:flex;gap:0;overflow-x:auto;}
-.pstep{flex:1;min-width:110px;padding:28px 18px;background:rgba(26,58,42,0.15);border:1px solid rgba(200,149,58,0.07);border-right:none;position:relative;text-align:center;}
+.pstep{flex:1;min-width:110px;padding:28px 18px;background:rgba(26,58,42,0.14);border:1px solid rgba(200,149,58,0.07);border-right:none;position:relative;text-align:center;}
 .pstep:last-child{border-right:1px solid rgba(200,149,58,0.07);}
 .pstep::after{content:'›';position:absolute;right:-11px;top:50%;transform:translateY(-50%);color:var(--gold);font-size:18px;z-index:2;background:var(--ink);padding:2px;}
 .pstep:last-child::after{display:none;}
-.ps-n{font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.35em;color:var(--gold);margin-bottom:10px;}
+.ps-n{font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.38em;color:var(--gold);margin-bottom:10px;}
 .ps-t{font-family:'Cinzel',serif;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--warm);margin-bottom:6px;}
 .ps-b{font-size:10px;color:rgba(245,242,236,0.35);line-height:1.55;}
 
 /* TIMELINE */
 .timeline{padding-left:44px;position:relative;}
-.timeline::before{content:'';position:absolute;left:10px;top:8px;bottom:0;width:1px;background:linear-gradient(to bottom,var(--gold),rgba(200,149,58,0.08));}
+.timeline::before{content:'';position:absolute;left:10px;top:8px;bottom:0;width:1px;background:linear-gradient(to bottom,var(--gold),rgba(200,149,58,0.05));}
 .tl-item{position:relative;margin-bottom:44px;}
 .tl-item::before{content:'';position:absolute;left:-38px;top:4px;width:12px;height:12px;border:2px solid var(--gold);background:var(--ink);}
 .tl-period{font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.4em;color:var(--gold);text-transform:uppercase;margin-bottom:6px;}
 .tl-title{font-family:'Cinzel',serif;font-size:15px;letter-spacing:0.15em;color:var(--warm);margin-bottom:8px;}
-.tl-body{font-size:13px;color:rgba(245,242,236,0.45);line-height:1.8;}
+.tl-body{font-size:13px;color:rgba(245,242,236,0.42);line-height:1.8;}
 
 /* CHECKLIST */
 .checklist{list-style:none;}
-.checklist li{display:flex;align-items:baseline;gap:12px;padding:9px 0;border-bottom:1px solid rgba(200,149,58,0.05);font-size:13px;color:rgba(245,242,236,0.6);}
+.checklist li{display:flex;align-items:baseline;gap:12px;padding:9px 0;border-bottom:1px solid rgba(200,149,58,0.05);font-size:13px;color:rgba(245,242,236,0.55);}
 .checklist li::before{content:'◆';color:var(--gold);font-size:7px;flex-shrink:0;}
 
-/* QUOTE BLOCK */
-.quote{padding:44px 48px;background:rgba(200,149,58,0.04);border:1px solid rgba(200,149,58,0.18);border-left:3px solid var(--gold);}
+/* QUOTE */
+.quote{padding:48px 52px;background:rgba(200,149,58,0.03);border:1px solid rgba(200,149,58,0.15);border-left:3px solid var(--gold);}
 .quote p{font-family:'Cormorant Garamond',serif;font-size:clamp(18px,2.5vw,28px);font-weight:300;font-style:italic;color:var(--warm);line-height:1.55;}
-.quote .attr{font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.38em;color:rgba(200,149,58,0.55);text-transform:uppercase;margin-top:20px;}
+.quote .attr{font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.4em;color:rgba(200,149,58,0.5);text-transform:uppercase;margin-top:20px;}
 
-/* ORG CHART */
+/* ORG */
 .org-box{padding:20px 28px;border:1px solid rgba(200,149,58,0.15);text-align:center;transition:all 0.3s;}
 .org-box.primary{background:rgba(200,149,58,0.08);border-color:rgba(200,149,58,0.3);}
-.org-box.secondary{background:rgba(26,58,42,0.2);}
+.org-box.secondary{background:rgba(26,58,42,0.18);}
 .ob-name{font-family:'Cinzel',serif;font-size:12px;letter-spacing:0.15em;color:var(--warm);margin-bottom:4px;}
-.ob-role{font-size:10px;letter-spacing:0.15em;color:rgba(200,149,58,0.55);text-transform:uppercase;}
+.ob-role{font-size:10px;letter-spacing:0.15em;color:rgba(200,149,58,0.5);text-transform:uppercase;}
 
-/* AUTHORITY TABLE */
+/* AUTH TABLE */
 .auth-table{width:100%;border-collapse:collapse;}
-.auth-table th{font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);padding:14px 18px;background:rgba(26,58,42,0.28);border:1px solid rgba(200,149,58,0.1);text-align:left;}
-.auth-table td{font-size:12px;padding:12px 18px;border:1px solid rgba(200,149,58,0.05);color:rgba(245,242,236,0.65);vertical-align:top;}
-.auth-table tr:hover td{background:rgba(26,58,42,0.12);}
+.auth-table th{font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);padding:14px 18px;background:rgba(26,58,42,0.25);border:1px solid rgba(200,149,58,0.1);text-align:left;}
+.auth-table td{font-size:12px;padding:12px 18px;border:1px solid rgba(200,149,58,0.05);color:rgba(245,242,236,0.6);vertical-align:top;}
+.auth-table tr:hover td{background:rgba(26,58,42,0.1);}
 .auth-own{color:var(--gold);font-weight:500;}
 
-/* ROADMAP */
-.roadmap{display:grid;grid-template-columns:repeat(5,1fr);gap:2px;}
-.ry{padding:36px 24px;border:1px solid rgba(200,149,58,0.08);background:rgba(26,58,42,0.08);transition:all 0.3s;}
-.ry:hover{background:rgba(26,58,42,0.28);}
-.ry.highlight{border-color:rgba(200,149,58,0.28);background:rgba(200,149,58,0.05);}
-.ry-yr{font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.4em;color:var(--gold);text-transform:uppercase;margin-bottom:6px;}
-.ry-title{font-family:'Cinzel',serif;font-size:14px;letter-spacing:0.15em;color:var(--warm);margin-bottom:16px;}
-.ry-items{list-style:none;}
-.ry-items li{font-size:11px;color:rgba(245,242,236,0.45);padding:5px 0;border-bottom:1px solid rgba(200,149,58,0.04);line-height:1.5;}
-
-/* RISK TABLE */
-.risk-row{display:grid;grid-template-columns:2fr 1fr 1fr 2fr;gap:0;}
-.risk-cell{padding:12px 18px;border:1px solid rgba(200,149,58,0.05);font-size:12px;}
-.risk-head .risk-cell{background:rgba(26,58,42,0.28);font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.3em;color:var(--gold);text-transform:uppercase;}
-.r-high{color:var(--danger);}
-.r-med{color:var(--gold);}
-.r-low{color:var(--green);}
+/* JOURNEY */
+.journey{display:grid;grid-template-columns:repeat(6,1fr);gap:2px;}
+.js{padding:28px 18px;border:1px solid rgba(200,149,58,0.07);background:rgba(0,0,0,0.15);transition:all 0.3s;}
+.js:hover{background:rgba(26,58,42,0.18);border-color:rgba(200,149,58,0.18);}
+.js-step{font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.32em;color:var(--gold);margin-bottom:10px;}
+.js-title{font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.15em;color:var(--warm);margin-bottom:6px;}
+.js-body{font-size:11px;color:rgba(245,242,236,0.35);line-height:1.6;}
 
 /* TECH GRID */
 .tech-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;}
 .tc{padding:28px 24px;background:rgba(0,0,0,0.2);border:1px solid rgba(200,149,58,0.06);transition:all 0.3s;}
-.tc:hover{background:rgba(26,58,42,0.18);border-color:rgba(200,149,58,0.18);}
+.tc:hover{background:rgba(26,58,42,0.15);border-color:rgba(200,149,58,0.18);}
 .tc-cat{font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.4em;color:var(--gold);text-transform:uppercase;margin-bottom:8px;}
 .tc-tool{font-size:13px;font-weight:500;color:var(--warm);margin-bottom:4px;}
-.tc-use{font-size:11px;color:rgba(245,242,236,0.3);line-height:1.5;}
+.tc-use{font-size:11px;color:rgba(245,242,236,0.28);line-height:1.5;}
 
-/* JOURNEY MAP */
-.journey{display:grid;grid-template-columns:repeat(6,1fr);gap:2px;}
-.js{padding:26px 18px;border:1px solid rgba(200,149,58,0.07);background:rgba(0,0,0,0.18);transition:all 0.3s;}
-.js:hover{background:rgba(26,58,42,0.2);border-color:rgba(200,149,58,0.18);}
-.js-step{font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.3em;color:var(--gold);margin-bottom:10px;}
-.js-title{font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.15em;color:var(--warm);margin-bottom:6px;}
-.js-body{font-size:11px;color:rgba(245,242,236,0.38);line-height:1.6;}
+/* ROADMAP */
+.roadmap{display:grid;grid-template-columns:repeat(5,1fr);gap:2px;}
+.ry{padding:36px 24px;border:1px solid rgba(200,149,58,0.07);background:rgba(26,58,42,0.07);transition:all 0.3s;}
+.ry:hover{background:rgba(26,58,42,0.25);}
+.ry.highlight{border-color:rgba(200,149,58,0.28);background:rgba(200,149,58,0.05);}
+.ry-yr{font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.42em;color:var(--gold);text-transform:uppercase;margin-bottom:6px;}
+.ry-title{font-family:'Cinzel',serif;font-size:14px;letter-spacing:0.15em;color:var(--warm);margin-bottom:16px;}
+.ry-items{list-style:none;}
+.ry-items li{font-size:11px;color:rgba(245,242,236,0.4);padding:5px 0;border-bottom:1px solid rgba(200,149,58,0.04);line-height:1.5;}
+
+/* RISK */
+.risk-row{display:grid;grid-template-columns:2fr 1fr 1fr 2fr;gap:0;}
+.risk-cell{padding:12px 18px;border:1px solid rgba(200,149,58,0.05);font-size:12px;}
+.risk-head .risk-cell{background:rgba(26,58,42,0.25);font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.3em;color:var(--gold);text-transform:uppercase;}
+.r-high{color:var(--danger);}
+.r-med{color:var(--gold);}
+.r-low{color:var(--green);}
 
 /* INCENTIVES */
-.inc-pillar{padding:20px;background:rgba(0,0,0,0.2);border-left:3px solid var(--gold);margin-bottom:2px;}
+.inc-pillar{padding:22px 24px;background:rgba(0,0,0,0.2);border-left:3px solid var(--gold);margin-bottom:2px;}
 .inc-title{font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.22em;color:var(--gold);margin-bottom:8px;}
-.inc-body{font-size:13px;color:rgba(245,242,236,0.55);line-height:1.75;}
+.inc-body{font-size:13px;color:rgba(245,242,236,0.5);line-height:1.75;}
 
 /* UTILITIES */
-.small-caps{font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.45em;text-transform:uppercase;color:rgba(200,149,58,0.55);}
+.small-caps{font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.45em;text-transform:uppercase;color:rgba(200,149,58,0.5);}
 .locked{display:inline-block;font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.4em;color:var(--gold);text-transform:uppercase;padding:5px 14px;border:1px solid rgba(200,149,58,0.35);}
 .gold{color:var(--gold);}
 
 /* FOOTER */
-.brand-footer{background:var(--forest);padding:80px;text-align:center;position:relative;}
+.brand-footer{background:var(--forest);padding:88px 80px;text-align:center;position:relative;}
 .brand-footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,var(--gold),transparent);}
 .bf-logo{font-family:'Cinzel',serif;font-size:36px;font-weight:700;letter-spacing:0.28em;margin-bottom:12px;}
-.bf-logo span{color:var(--gold);}
-.bf-sub{font-family:'Cormorant Garamond',serif;font-size:17px;font-style:italic;letter-spacing:0.28em;color:rgba(245,242,236,0.35);margin-bottom:48px;}
+.bf-logo .gold{color:var(--gold);}
+.bf-sub{font-family:'Cormorant Garamond',serif;font-size:17px;font-style:italic;letter-spacing:0.28em;color:rgba(245,242,236,0.3);margin-bottom:48px;}
 .bf-stamp{display:inline-block;border:1px solid rgba(200,149,58,0.28);padding:12px 36px;font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.45em;color:var(--gold);text-transform:uppercase;}
 
 /* ANIMATIONS */
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
-.hero-inner>*{animation:fadeUp 0.9s ease forwards;opacity:0;}
-.hero-inner>*:nth-child(1){animation-delay:0.05s;}
-.hero-inner>*:nth-child(2){animation-delay:0.25s;}
-.hero-inner>*:nth-child(3){animation-delay:0.5s;}
-.hero-inner>*:nth-child(4){animation-delay:0.7s;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+.hero-inner>*{animation:fadeUp 1s ease forwards;opacity:0;}
+.hero-inner>*:nth-child(1){animation-delay:0.1s;}
+.hero-inner>*:nth-child(2){animation-delay:0.35s;}
+.hero-inner>*:nth-child(3){animation-delay:0.6s;}
+.hero-strip>*{animation:fadeUp 0.8s ease forwards;opacity:0;animation-delay:0.05s;}
 
-@media(max-width:1000px){
-  .hero-inner,.section,.cc-inner,.brand-footer{padding-left:32px;padding-right:32px;}
-  .hero-center,.g2,.g3,.g4,.tech-grid,.roadmap,.risk-row{grid-template-columns:1fr 1fr;}
-  .risk-row,.auth-table{font-size:11px;}
+/* RESPONSIVE */
+@media(max-width:1100px){
+  .hero-inner,.section,.cc-inner,.brand-footer{padding-left:36px;padding-right:36px;}
+  .hero-strip{padding-left:36px;padding-right:36px;}
+  .hero-content,.g2,.g3,.g4,.tech-grid,.roadmap{grid-template-columns:1fr 1fr;}
+  .journey,.hero-stats{grid-template-columns:1fr 1fr;}
+  .cc-panels{grid-template-columns:1fr;}
+  .cc-priority{grid-template-columns:1fr 1fr;}
   .nav-links{display:none;}
-  .journey,.hero-team{grid-template-columns:1fr 1fr;}
   .process-flow{flex-direction:column;}
   .pstep{border-right:1px solid rgba(200,149,58,0.07);}
   .pstep::after{display:none;}
-  .cc-grid{grid-template-columns:1fr;}
-  .priority-banner{grid-template-columns:1fr 1fr;}
+  .risk-row,.auth-table{font-size:11px;}
 }
-@media(max-width:600px){
-  .section,.hero-inner,.cc-inner{padding-left:20px;padding-right:20px;}
-  .hero-center,.g2,.g3,.g4,.tech-grid,.roadmap,.journey,.hero-team,.priority-banner{grid-template-columns:1fr;}
-  .hero-brand{font-size:52px;}
-  .brand-footer{padding:48px 20px;}
+@media(max-width:680px){
+  .section,.hero-inner,.cc-inner{padding-left:22px;padding-right:22px;}
+  .hero-strip{padding-left:22px;padding-right:22px;}
+  .hero-content,.g2,.g3,.g4,.tech-grid,.roadmap,.journey,.hero-stats,.hero-team,.cc-priority{grid-template-columns:1fr;}
+  .hero-wordmark{font-size:56px;}
+  .brand-footer{padding:48px 22px;}
 }
 </style>
 </head>
 <body>
 
-<!-- ══════════════════════════════════════════════════
+<!-- ══════════════════════════════════════════════
      HERO — MISSION CONTROL
-══════════════════════════════════════════════════ -->
+══════════════════════════════════════════════ -->
 <div class="hero">
-  <div class="hero-grid-bg"></div>
-  <div class="hero-glow"></div>
-  <div class="hero-inner">
-    <div class="hero-top-line">
-      <div class="hero-doc-badge">Document 02 · Master Blueprint · Operational Source of Truth</div>
-      <div class="hero-doc-sep"></div>
-      <div class="hero-doc-meta">Pretoria East · Launch Edition</div>
-    </div>
+  <div class="hero-grid"></div>
+  <div class="hero-atmosphere"></div>
+  <div class="hero-scan"></div>
 
-    <div class="hero-center">
-      <div class="hero-left">
-        <div class="hero-brand">Prime<span>Turf</span></div>
-        <div class="hero-descriptor">Luxury Outdoor Transformation</div>
-        <div class="hero-precision">Delivered with Executive Precision</div>
+  <div class="hero-strip">
+    <div class="hs-badge">Document 02 · Master Blueprint · Operational Source of Truth</div>
+    <div class="hs-flex"></div>
+    <div class="hs-meta">Pretoria East · Launch Edition</div>
+  </div>
+
+  <div class="hero-inner">
+    <div class="hero-content">
+      <div>
+        <div class="hero-wordmark">Prime<span class="gold">Turf</span></div>
+        <div class="hero-sub1">Luxury Outdoor Transformation</div>
+        <div class="hero-sub2">Delivered with Executive Precision</div>
         <div class="hero-tagline">Pretoria East Launch Blueprint</div>
-        <div class="hero-sub-tagline">One Team · One Territory · One Standard</div>
+        <div class="hero-subtag">One Team &nbsp;·&nbsp; One Territory &nbsp;·&nbsp; One Standard</div>
       </div>
-      <div class="hero-right">
-        <div class="hero-stat"><div class="hs-val">1</div><div class="hs-label">Territory First</div></div>
-        <div class="hero-stat"><div class="hs-val">4</div><div class="hs-label">Founding Team</div></div>
-        <div class="hero-stat"><div class="hs-val">31</div><div class="hs-label">Sections</div></div>
-        <div class="hero-stat"><div class="hs-val">5yr</div><div class="hs-label">Vision</div></div>
+      <div>
+        <div class="hero-stats">
+          <div class="hstat"><div class="hstat-val">1</div><div class="hstat-lbl">Focus Territory</div></div>
+          <div class="hstat"><div class="hstat-val">Launch</div><div class="hstat-lbl">Current Phase</div></div>
+          <div class="hstat"><div class="hstat-val">P.1</div><div class="hstat-lbl">Priority</div></div>
+          <div class="hstat"><div class="hstat-val">5yr</div><div class="hstat-lbl">National Vision</div></div>
+        </div>
       </div>
     </div>
 
     <div class="hero-team">
-      <div class="team-member"><div class="tm-name">Leon van Eeden</div><div class="tm-role">Managing Director · Final Authority</div></div>
-      <div class="team-member"><div class="tm-name">Mechanne van Eeden</div><div class="tm-role">Client Experience & Admin</div></div>
-      <div class="team-member"><div class="tm-name">Stefan</div><div class="tm-role">Operations & Installations</div></div>
-      <div class="team-member"><div class="tm-name">Stiaan du Plessis</div><div class="tm-role">Growth · Brand · Digital</div></div>
+      <div class="tm"><div class="tm-name">Leon van Eeden</div><div class="tm-role">Managing Director · Final Authority</div></div>
+      <div class="tm"><div class="tm-name">Mechanne van Eeden</div><div class="tm-role">Client Experience & Admin</div></div>
+      <div class="tm"><div class="tm-name">Stefan</div><div class="tm-role">Operations & Installations</div></div>
+      <div class="tm"><div class="tm-name">Stiaan du Plessis</div><div class="tm-role">Growth · Brand · Digital</div></div>
     </div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════════
+<!-- ══════════════════════════════════════════════
      COMMAND CENTER
-══════════════════════════════════════════════════ -->
+══════════════════════════════════════════════ -->
 <div class="command-center" id="command">
-<div class="cc-inner">
-  <div class="cc-header">
-    <div class="cc-title">Command Center</div>
-    <div class="cc-date">Launch Status · Pretoria East</div>
-  </div>
+  <div class="cc-bg-grid"></div>
+  <div class="cc-atmosphere"></div>
+  <div class="cc-inner">
 
-  <div class="cc-grid">
-    <div class="cc-panel active">
-      <div class="cc-panel-label">✅ Completed</div>
-      <div class="task done-task"><div class="task-check done">✓</div><div class="task-text">Brand System Locked</div></div>
-      <div class="task done-task"><div class="task-check done">✓</div><div class="task-text">Logo System Approved</div></div>
-      <div class="task done-task"><div class="task-check done">✓</div><div class="task-text">Pretoria East Territory Locked</div></div>
-      <div class="task done-task"><div class="task-check done">✓</div><div class="task-text">Master Blueprint Created</div></div>
-      <div class="task done-task"><div class="task-check done">✓</div><div class="task-text">Leadership Structure Defined</div></div>
-      <div class="task done-task"><div class="task-check done">✓</div><div class="task-text">Target Market Confirmed</div></div>
+    <div class="cc-head">
+      <div>
+        <div class="cc-eyebrow" style="margin-bottom:14px">Prime Command</div>
+        <div class="cc-title">Command<br><span class="gold">Center</span></div>
+      </div>
+      <div class="cc-rule"></div>
+      <div class="cc-date">Launch Status<br>Pretoria East</div>
     </div>
-    <div class="cc-panel pending">
-      <div class="cc-panel-label">⬜ Next Actions</div>
-      <div class="task todo-task"><div class="task-check todo">✓</div><div class="task-text">Register Domain</div></div>
-      <div class="task todo-task"><div class="task-check todo">✓</div><div class="task-text">Secure Social Handles (@primeturf)</div></div>
-      <div class="task todo-task"><div class="task-check todo">✓</div><div class="task-text">Create Google Business Profile</div></div>
-      <div class="task todo-task"><div class="task-check todo">✓</div><div class="task-text">Configure WhatsApp Business</div></div>
-      <div class="task todo-task"><div class="task-check todo">✓</div><div class="task-text">Activate CRM (HubSpot Free)</div></div>
-      <div class="task todo-task"><div class="task-check todo">✓</div><div class="task-text">Launch First Social Post</div></div>
-      <div class="task todo-task"><div class="task-check todo">✓</div><div class="task-text">Activate First 10 Referrers</div></div>
-      <div class="task todo-task"><div class="task-check todo">✓</div><div class="task-text">Acquire First Google Review</div></div>
-    </div>
-  </div>
 
-  <div class="priority-banner">
-    <div class="pb-card">
-      <div class="pb-num">01</div>
-      <div class="pb-title">This Week's Priority</div>
-      <div class="pb-action">Domain registered. GBP created. WhatsApp Business configured. These three unlock the entire lead capture system.</div>
+    <div class="cc-panels" style="margin-bottom:2px">
+      <div class="cc-panel done">
+        <div class="cc-panel-label">
+          <span style="display:inline-block;width:8px;height:8px;background:var(--green);border-radius:50%;box-shadow:0 0 8px var(--green)"></span>
+          Completed — Foundation Locked
+        </div>
+        <div class="task is-done"><div class="task-box done">✓</div><div class="task-text">Brand System Locked</div></div>
+        <div class="task is-done"><div class="task-box done">✓</div><div class="task-text">Logo System Approved</div></div>
+        <div class="task is-done"><div class="task-box done">✓</div><div class="task-text">Pretoria East Territory Locked</div></div>
+        <div class="task is-done"><div class="task-box done">✓</div><div class="task-text">Master Blueprint Created</div></div>
+        <div class="task is-done"><div class="task-box done">✓</div><div class="task-text">Leadership Structure Defined</div></div>
+        <div class="task is-done"><div class="task-box done">✓</div><div class="task-text">Target Market Confirmed</div></div>
+      </div>
+      <div class="cc-panel next">
+        <div class="cc-panel-label">
+          <span style="display:inline-block;width:8px;height:8px;background:var(--gold);border-radius:50%;animation:pulse 2s ease-in-out infinite;box-shadow:0 0 8px rgba(200,149,58,0.6)"></span>
+          Next Actions — Execute Now
+        </div>
+        <div class="task is-todo"><div class="task-box todo"></div><div class="task-text">Register Domain</div></div>
+        <div class="task is-todo"><div class="task-box todo"></div><div class="task-text">Secure Social Handles (@primeturf)</div></div>
+        <div class="task is-todo"><div class="task-box todo"></div><div class="task-text">Create Google Business Profile</div></div>
+        <div class="task is-todo"><div class="task-box todo"></div><div class="task-text">Configure WhatsApp Business</div></div>
+        <div class="task is-todo"><div class="task-box todo"></div><div class="task-text">Activate CRM (HubSpot Free)</div></div>
+        <div class="task is-todo"><div class="task-box todo"></div><div class="task-text">Launch First Social Post</div></div>
+        <div class="task is-todo"><div class="task-box todo"></div><div class="task-text">Activate First 10 Referrers</div></div>
+        <div class="task is-todo"><div class="task-box todo"></div><div class="task-text">Acquire First Google Review</div></div>
+      </div>
     </div>
-    <div class="pb-card">
-      <div class="pb-num">02</div>
-      <div class="pb-title">This Month's Priority</div>
-      <div class="pb-action">First 5 installations completed. First 5 Google reviews acquired. First before/after content live on Instagram and TikTok.</div>
+
+    <div class="cc-priority">
+      <div class="pb">
+        <div class="pb-num">01</div>
+        <div class="pb-period">This Week</div>
+        <div class="pb-title">Foundation Activated</div>
+        <div class="pb-action">Domain registered. GBP created. WhatsApp Business configured. These three unlock the entire lead capture system. Nothing moves without them.</div>
+      </div>
+      <div class="pb">
+        <div class="pb-num">02</div>
+        <div class="pb-period">This Month</div>
+        <div class="pb-title">First Proof Points</div>
+        <div class="pb-action">First 5 installations completed. First 5 Google reviews acquired. First before/after content live on Instagram and TikTok. The portfolio begins.</div>
+      </div>
+      <div class="pb">
+        <div class="pb-num">03</div>
+        <div class="pb-period">This Quarter</div>
+        <div class="pb-title">Market Dominance Begins</div>
+        <div class="pb-action">Page 1 Google for "artificial turf Moreleta Park." 20+ reviews. Second installation crew operational. Referral system actively generating leads.</div>
+      </div>
     </div>
-    <div class="pb-card">
-      <div class="pb-num">03</div>
-      <div class="pb-title">This Quarter's Priority</div>
-      <div class="pb-action">Page 1 Google for "artificial turf Moreleta Park." 20+ reviews. Second installation crew operational. Referral system active.</div>
-    </div>
+
   </div>
-</div>
 </div>
 
 <!-- STICKY NAV -->
 <nav class="doc-nav">
 <div class="nav-inner">
-  <div class="nav-logo">Prime<span>Turf</span> <span style="color:rgba(245,242,236,0.18);margin-left:8px;font-size:9px;letter-spacing:0.3em">MASTER BLUEPRINT</span></div>
+  <div class="nav-logo">Prime<span class="gold">Turf</span><span class="nav-tag">Master Blueprint</span></div>
   <div class="nav-links">
     <a href="#command" class="nav-link">Command</a>
     <a href="#vision" class="nav-link">Vision</a>
@@ -380,10 +444,26 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
     <div class="s-sub">Dominate Pretoria East. Build systems before scaling. Deliver exceptional client experiences. Create a repeatable premium outdoor transformation model.</div>
   </div>
   <div class="g4" style="margin-bottom:48px">
-    <div style="padding:36px 28px;background:rgba(200,149,58,0.06);border:1px solid rgba(200,149,58,0.2);text-align:center"><div style="font-family:'Cormorant Garamond',serif;font-size:44px;color:var(--gold);margin-bottom:8px">1st</div><div class="small-caps">Dominate Local</div><p style="font-size:11px;color:rgba(245,242,236,0.35);margin-top:8px;line-height:1.6">Become the clear #1 in Pretoria East premium outdoor transformation</p></div>
-    <div style="padding:36px 28px;background:rgba(255,255,255,0.018);border:1px solid rgba(200,149,58,0.07);text-align:center"><div style="font-family:'Cormorant Garamond',serif;font-size:44px;color:var(--gold);margin-bottom:8px">→</div><div class="small-caps">Systemise</div><p style="font-size:11px;color:rgba(245,242,236,0.35);margin-top:8px;line-height:1.6">Document every process so the model replicates without founders in every role</p></div>
-    <div style="padding:36px 28px;background:rgba(255,255,255,0.018);border:1px solid rgba(200,149,58,0.07);text-align:center"><div style="font-family:'Cormorant Garamond',serif;font-size:44px;color:var(--gold);margin-bottom:8px">⊞</div><div class="small-caps">Expand</div><p style="font-size:11px;color:rgba(245,242,236,0.35);margin-top:8px;line-height:1.6">Deploy the proven model into adjacent Gauteng markets and beyond</p></div>
-    <div style="padding:36px 28px;background:rgba(255,255,255,0.018);border:1px solid rgba(200,149,58,0.07);text-align:center"><div style="font-family:'Cormorant Garamond',serif;font-size:44px;color:var(--gold);margin-bottom:8px">◎</div><div class="small-caps">National Brand</div><p style="font-size:11px;color:rgba(245,242,236,0.35);margin-top:8px;line-height:1.6">South Africa's most recognised premium outdoor transformation brand</p></div>
+    <div style="padding:36px 28px;background:rgba(200,149,58,0.06);border:1px solid rgba(200,149,58,0.2);text-align:center">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:44px;color:var(--gold);margin-bottom:8px">1st</div>
+      <div class="small-caps">Dominate Local</div>
+      <p style="font-size:11px;color:rgba(245,242,236,0.35);margin-top:8px;line-height:1.6">Become the clear #1 in Pretoria East premium outdoor transformation</p>
+    </div>
+    <div style="padding:36px 28px;background:rgba(255,255,255,0.015);border:1px solid rgba(200,149,58,0.07);text-align:center">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:44px;color:var(--gold);margin-bottom:8px">→</div>
+      <div class="small-caps">Systemise</div>
+      <p style="font-size:11px;color:rgba(245,242,236,0.35);margin-top:8px;line-height:1.6">Document every process so the model replicates without founders in every role</p>
+    </div>
+    <div style="padding:36px 28px;background:rgba(255,255,255,0.015);border:1px solid rgba(200,149,58,0.07);text-align:center">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:44px;color:var(--gold);margin-bottom:8px">⊞</div>
+      <div class="small-caps">Expand</div>
+      <p style="font-size:11px;color:rgba(245,242,236,0.35);margin-top:8px;line-height:1.6">Deploy the proven model into adjacent Gauteng markets and beyond</p>
+    </div>
+    <div style="padding:36px 28px;background:rgba(255,255,255,0.015);border:1px solid rgba(200,149,58,0.07);text-align:center">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:44px;color:var(--gold);margin-bottom:8px">◎</div>
+      <div class="small-caps">National Brand</div>
+      <p style="font-size:11px;color:rgba(245,242,236,0.35);margin-top:8px;line-height:1.6">South Africa's most recognised premium outdoor transformation brand</p>
+    </div>
   </div>
   <div class="quote">
     <p>"PrimeTurf is not being built to survive. It is being built to define a category."</p>
@@ -401,17 +481,16 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
     <div class="s-title">Four Roles. Zero Ambiguity.</div>
     <div class="s-rule"></div>
   </div>
-  <!-- Org -->
   <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:56px">
-    <div class="org-box primary" style="width:280px;margin-bottom:2px">
+    <div class="org-box primary" style="width:290px;margin-bottom:2px">
       <div class="ob-name">Leon van Eeden</div>
       <div class="ob-role">Managing Director · Final Authority</div>
     </div>
     <div style="width:1px;height:32px;background:rgba(200,149,58,0.3)"></div>
     <div style="display:flex;gap:2px;flex-wrap:wrap;justify-content:center">
-      <div class="org-box secondary" style="width:220px"><div class="ob-name">Mechanne van Eeden</div><div class="ob-role">Client Experience & Admin</div></div>
-      <div class="org-box secondary" style="width:220px"><div class="ob-name">Stefan</div><div class="ob-role">Operations & Installations</div></div>
-      <div class="org-box secondary" style="width:220px"><div class="ob-name">Stiaan du Plessis</div><div class="ob-role">Growth · Brand · Digital</div></div>
+      <div class="org-box secondary" style="width:225px"><div class="ob-name">Mechanne van Eeden</div><div class="ob-role">Client Experience & Admin</div></div>
+      <div class="org-box secondary" style="width:225px"><div class="ob-name">Stefan</div><div class="ob-role">Operations & Installations</div></div>
+      <div class="org-box secondary" style="width:225px"><div class="ob-name">Stiaan du Plessis</div><div class="ob-role">Growth · Brand · Digital</div></div>
     </div>
   </div>
   <div class="g4">
@@ -461,23 +540,41 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
     <div class="s-eyebrow">04 · Target Market</div>
     <div class="s-title">Pretoria East Premium Residential</div>
     <div class="s-rule"></div>
-    <div class="locked" style="margin-top:18px">Locked</div>
+    <div class="locked" style="margin-top:18px">Territory Locked</div>
   </div>
   <div class="g3" style="margin-bottom:40px">
     <div style="padding:36px;background:rgba(26,58,42,0.2);border:1px solid rgba(200,149,58,0.1)">
       <div class="small-caps" style="margin-bottom:16px">Primary Segment</div>
       <div style="font-family:'Cinzel',serif;font-size:17px;color:var(--warm);margin-bottom:12px">Premium Residential</div>
-      <ul class="checklist"><li>Moreleta Park · Anchor territory</li><li>Silver Lakes · Trophy territory</li><li>Waterkloof · Heritage, ultra premium</li><li>Mooikloof · Equestrian, high value</li><li>Faerie Glen · Core digital territory</li></ul>
+      <ul class="checklist">
+        <li>Moreleta Park · Anchor territory</li>
+        <li>Silver Lakes · Trophy territory</li>
+        <li>Waterkloof · Heritage, ultra premium</li>
+        <li>Mooikloof · Equestrian, high value</li>
+        <li>Faerie Glen · Core digital territory</li>
+      </ul>
     </div>
     <div style="padding:36px;background:rgba(26,58,42,0.2);border:1px solid rgba(200,149,58,0.1)">
       <div class="small-caps" style="margin-bottom:16px">Secondary Segments</div>
       <div style="font-family:'Cinzel',serif;font-size:17px;color:var(--warm);margin-bottom:12px">Schools & Commercial</div>
-      <ul class="checklist"><li>Private schools — sports fields</li><li>Corporate estates, office parks</li><li>Boutique guesthouses, lodges</li><li>Property developers — show houses</li><li>HOA and body corporate tenders</li></ul>
+      <ul class="checklist">
+        <li>Private schools — sports fields</li>
+        <li>Corporate estates, office parks</li>
+        <li>Boutique guesthouses, lodges</li>
+        <li>Property developers — show houses</li>
+        <li>HOA and body corporate tenders</li>
+      </ul>
     </div>
     <div style="padding:36px;background:rgba(26,58,42,0.2);border:1px solid rgba(200,149,58,0.1)">
       <div class="small-caps" style="margin-bottom:16px">Buying Triggers</div>
       <div style="font-family:'Cinzel',serif;font-size:17px;color:var(--warm);margin-bottom:12px">Why They Buy Now</div>
-      <ul class="checklist"><li>New home or renovation project</li><li>Pool installation or landscaping refresh</li><li>Water restrictions — maintenance cut</li><li>Selling — kerb appeal increase</li><li>Saw a neighbour's transformation</li></ul>
+      <ul class="checklist">
+        <li>New home or renovation project</li>
+        <li>Pool installation or landscaping refresh</li>
+        <li>Water restrictions — maintenance cut</li>
+        <li>Selling — kerb appeal increase</li>
+        <li>Saw a neighbour's transformation</li>
+      </ul>
     </div>
   </div>
   <div class="quote"><p>"The PrimeTurf client does not ask how much first. They ask can you do this to the standard my home deserves? Price is the last conversation, not the first."</p></div>
@@ -559,7 +656,7 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 </div>
 <div class="h-rule"></div>
 
-<!-- ══ 08 LEAD MANAGEMENT + SALES ══ -->
+<!-- ══ 08 LEAD MANAGEMENT ══ -->
 <div id="leads" class="bg-forest">
 <div class="section">
   <div class="section-header">
@@ -627,7 +724,7 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 </div>
 <div class="h-rule"></div>
 
-<!-- ══ 10 DIGITAL — GBP + SEO + CONTENT ══ -->
+<!-- ══ 10 DIGITAL ══ -->
 <div id="digital" class="bg-forest">
 <div class="section">
   <div class="section-header">
@@ -666,7 +763,7 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
   </div>
   <div class="g2" style="margin-bottom:40px">
     <div>
-      <p class="cormorant" style="font-family:'Cormorant Garamond',serif;font-size:clamp(20px,2.5vw,30px);font-weight:300;font-style:italic;line-height:1.5;color:var(--warm);margin-bottom:28px">Referrals are not a bonus. They are the primary growth engine for the first two years. A referred client costs nothing, converts at 80%+, and becomes a referrer themselves.</p>
+      <p style="font-family:'Cormorant Garamond',serif;font-size:clamp(20px,2.5vw,30px);font-weight:300;font-style:italic;line-height:1.5;color:var(--warm);margin-bottom:28px">Referrals are not a bonus. They are the primary growth engine for the first two years. A referred client costs nothing, converts at 80%+, and becomes a referrer themselves.</p>
       <ul class="checklist">
         <li>Ask on Day 14 — peak satisfaction window</li>
         <li>One message. One invitation. Never ask twice.</li>
@@ -676,10 +773,10 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
         <li>Estate agents, architects, pool companies — adjacent referrers</li>
       </ul>
     </div>
-    <div style="padding:40px;background:rgba(26,58,42,0.2);border:1px solid rgba(200,149,58,0.1)">
+    <div style="padding:44px;background:rgba(26,58,42,0.2);border:1px solid rgba(200,149,58,0.1)">
       <div class="small-caps" style="margin-bottom:16px">The Referral Message</div>
       <p style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;font-style:italic;color:var(--warm);line-height:1.6;margin-bottom:24px">"If anyone in your estate or neighbourhood asks about your outdoor space, we'd love an introduction. You can share our details or simply reply and we'll reach out directly."</p>
-      <p style="font-size:12px;color:rgba(245,242,236,0.35)">Gracious. Direct. No transactional language. No incentive offer. Pure relationship.</p>
+      <p style="font-size:12px;color:rgba(245,242,236,0.32)">Gracious. Direct. No transactional language. No incentive offer. Pure relationship.</p>
     </div>
   </div>
 </div>
@@ -799,8 +896,8 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 <div id="incentives" class="bg-forest">
 <div class="section">
   <div class="section-header">
-    <div class="s-eyebrow">16 · Aligned Incentives & Shared Upside</div>
-    <div class="s-title">We All Grow Together</div>
+    <div class="s-eyebrow">16 · Aligned Incentives</div>
+    <div class="s-title">Shared Growth Philosophy</div>
     <div class="s-rule"></div>
   </div>
   <div class="quote" style="margin-bottom:56px">
@@ -815,7 +912,7 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
       <div class="inc-pillar"><div class="inc-title">03 · Sustainability First</div><div class="inc-body">The business must remain financially healthy before individual upside is realised. A stable, growing company creates more long-term value for everyone than one that peaks and contracts.</div></div>
       <div class="inc-pillar"><div class="inc-title">04 · Future Opportunity</div><div class="inc-body">The founding team has first participation rights in future verticals, expansion opportunities, and any structural growth events. Building PrimeTurf from the start is the highest-value position available.</div></div>
     </div>
-    <div style="padding:40px;background:rgba(26,58,42,0.2);border:1px solid rgba(200,149,58,0.12)">
+    <div style="padding:44px;background:rgba(26,58,42,0.2);border:1px solid rgba(200,149,58,0.12)">
       <div class="small-caps" style="margin-bottom:20px">Compensation Principles</div>
       <ul class="checklist" style="margin-bottom:32px">
         <li>Structures remain <strong style="color:var(--warm)">flexible, scalable, and performance-linked</strong></li>
@@ -832,7 +929,7 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
         <li>Expansion participation</li>
         <li>Strategic partnerships</li>
       </ul>
-      <p style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;font-style:italic;color:rgba(245,242,236,0.5);line-height:1.6;margin-top:28px">Everyone who helps build PrimeTurf should benefit from PrimeTurf's success.</p>
+      <p style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;font-style:italic;color:rgba(245,242,236,0.45);line-height:1.6;margin-top:28px">Everyone who helps build PrimeTurf should benefit from PrimeTurf's success.</p>
     </div>
   </div>
 </div>
@@ -873,11 +970,11 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
     </div>
   </div>
   <div class="g3">
-    <div style="padding:28px;background:rgba(255,255,255,0.018);border:1px solid rgba(200,149,58,0.07);text-align:center"><div class="small-caps" style="margin-bottom:8px">Stage 1</div><div style="font-family:'Cinzel',serif;font-size:14px;color:var(--warm)">Pretoria East</div><div style="font-size:11px;color:rgba(200,149,58,0.5);margin-top:4px">Dominate fully</div></div>
-    <div style="padding:28px;background:rgba(255,255,255,0.018);border:1px solid rgba(200,149,58,0.07);text-align:center"><div class="small-caps" style="margin-bottom:8px">Stage 2</div><div style="font-family:'Cinzel',serif;font-size:14px;color:var(--warm)">Centurion · Midrand</div><div style="font-size:11px;color:rgba(200,149,58,0.5);margin-top:4px">Adjacent market</div></div>
-    <div style="padding:28px;background:rgba(255,255,255,0.018);border:1px solid rgba(200,149,58,0.07);text-align:center"><div class="small-caps" style="margin-bottom:8px">Stage 3</div><div style="font-family:'Cinzel',serif;font-size:14px;color:var(--warm)">JHB North</div><div style="font-size:11px;color:rgba(200,149,58,0.5);margin-top:4px">Sandton · Fourways</div></div>
-    <div style="padding:28px;background:rgba(255,255,255,0.018);border:1px solid rgba(200,149,58,0.07);text-align:center"><div class="small-caps" style="margin-bottom:8px">Stage 4</div><div style="font-family:'Cinzel',serif;font-size:14px;color:var(--warm)">Cape Town</div><div style="font-size:11px;color:rgba(200,149,58,0.5);margin-top:4px">Western Cape</div></div>
-    <div style="padding:28px;background:rgba(255,255,255,0.018);border:1px solid rgba(200,149,58,0.07);text-align:center"><div class="small-caps" style="margin-bottom:8px">Stage 5</div><div style="font-family:'Cinzel',serif;font-size:14px;color:var(--warm)">National</div><div style="font-size:11px;color:rgba(200,149,58,0.5);margin-top:4px">Franchise model</div></div>
+    <div style="padding:28px;background:rgba(255,255,255,0.015);border:1px solid rgba(200,149,58,0.07);text-align:center"><div class="small-caps" style="margin-bottom:8px">Stage 1</div><div style="font-family:'Cinzel',serif;font-size:14px;color:var(--warm)">Pretoria East</div><div style="font-size:11px;color:rgba(200,149,58,0.5);margin-top:4px">Dominate fully</div></div>
+    <div style="padding:28px;background:rgba(255,255,255,0.015);border:1px solid rgba(200,149,58,0.07);text-align:center"><div class="small-caps" style="margin-bottom:8px">Stage 2</div><div style="font-family:'Cinzel',serif;font-size:14px;color:var(--warm)">Centurion · Midrand</div><div style="font-size:11px;color:rgba(200,149,58,0.5);margin-top:4px">Adjacent market</div></div>
+    <div style="padding:28px;background:rgba(255,255,255,0.015);border:1px solid rgba(200,149,58,0.07);text-align:center"><div class="small-caps" style="margin-bottom:8px">Stage 3</div><div style="font-family:'Cinzel',serif;font-size:14px;color:var(--warm)">JHB North</div><div style="font-size:11px;color:rgba(200,149,58,0.5);margin-top:4px">Sandton · Fourways</div></div>
+    <div style="padding:28px;background:rgba(255,255,255,0.015);border:1px solid rgba(200,149,58,0.07);text-align:center"><div class="small-caps" style="margin-bottom:8px">Stage 4</div><div style="font-family:'Cinzel',serif;font-size:14px;color:var(--warm)">Cape Town</div><div style="font-size:11px;color:rgba(200,149,58,0.5);margin-top:4px">Western Cape</div></div>
+    <div style="padding:28px;background:rgba(255,255,255,0.015);border:1px solid rgba(200,149,58,0.07);text-align:center"><div class="small-caps" style="margin-bottom:8px">Stage 5</div><div style="font-family:'Cinzel',serif;font-size:14px;color:var(--warm)">National</div><div style="font-size:11px;color:rgba(200,149,58,0.5);margin-top:4px">Franchise model</div></div>
     <div style="padding:28px;background:rgba(200,149,58,0.05);border:1px solid rgba(200,149,58,0.2);text-align:center"><div class="small-caps" style="margin-bottom:8px">Vision</div><div style="font-family:'Cinzel',serif;font-size:14px;color:var(--gold)">SA's Most Recognised</div><div style="font-size:11px;color:rgba(200,149,58,0.5);margin-top:4px">Premium outdoor brand</div></div>
   </div>
 </div>
@@ -900,7 +997,7 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
     <div class="ry"><div class="ry-yr">Year 4</div><div class="ry-title">Scale</div><ul class="ry-items"><li>JHB North territory live</li><li>First franchise pilot</li><li>Cape Town assessed</li><li>Brand nationally recognised</li><li>Commercial tender capability</li></ul></div>
     <div class="ry highlight"><div class="ry-yr">Year 5</div><div class="ry-title" style="color:var(--gold)">National</div><ul class="ry-items"><li>Multiple Gauteng territories</li><li>Cape Town operational</li><li>Franchise model live</li><li>SA's most recognised premium outdoor brand</li><li>Founding vision realised</li></ul></div>
   </div>
-  <div style="padding:40px;background:rgba(200,149,58,0.04);border:1px solid rgba(200,149,58,0.18)">
+  <div style="padding:44px;background:rgba(200,149,58,0.03);border:1px solid rgba(200,149,58,0.16)">
     <p style="font-family:'Cormorant Garamond',serif;font-size:clamp(18px,2.5vw,26px);font-weight:300;font-style:italic;color:var(--warm);line-height:1.55">The only rule of this roadmap: each phase is unlocked by results, not by time. If Year 1 milestones take 18 months — Year 2 starts at month 19. Excellence is the only deadline.</p>
   </div>
 </div>
@@ -908,28 +1005,32 @@ body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml
 
 <!-- ══ FOUNDER CLOSE ══ -->
 <div class="bg-dark">
-<div class="section" style="text-align:center;max-width:900px">
+<div class="section" style="text-align:center;max-width:900px;margin:0 auto">
   <div class="small-caps" style="margin-bottom:40px">Leon van Eeden · Managing Director</div>
   <p style="font-family:'Cormorant Garamond',serif;font-size:clamp(24px,4vw,48px);font-weight:300;font-style:italic;line-height:1.4;color:var(--warm);margin-bottom:56px">"We are building something that outlasts any individual job. A brand that stands for quality in every estate it enters. A company that the people who build it are proud to have built."</p>
   <div style="width:100px;height:1px;background:linear-gradient(to right,transparent,var(--gold),transparent);margin:0 auto 56px"></div>
   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-bottom:64px">
-    <div style="padding:28px;text-align:center"><div style="font-family:'Cormorant Garamond',serif;font-size:32px;color:var(--gold);margin-bottom:8px">Precision</div><div class="small-caps">In every installation</div></div>
-    <div style="padding:28px;text-align:center"><div style="font-family:'Cormorant Garamond',serif;font-size:32px;color:var(--gold);margin-bottom:8px">Pride</div><div class="small-caps">In every interaction</div></div>
-    <div style="padding:28px;text-align:center"><div style="font-family:'Cormorant Garamond',serif;font-size:32px;color:var(--gold);margin-bottom:8px">Purpose</div><div class="small-caps">In every decision</div></div>
+    <div style="padding:32px;text-align:center"><div style="font-family:'Cormorant Garamond',serif;font-size:32px;color:var(--gold);margin-bottom:8px">Precision</div><div class="small-caps">In every installation</div></div>
+    <div style="padding:32px;text-align:center"><div style="font-family:'Cormorant Garamond',serif;font-size:32px;color:var(--gold);margin-bottom:8px">Pride</div><div class="small-caps">In every interaction</div></div>
+    <div style="padding:32px;text-align:center"><div style="font-family:'Cormorant Garamond',serif;font-size:32px;color:var(--gold);margin-bottom:8px">Purpose</div><div class="small-caps">In every decision</div></div>
   </div>
-  <div style="display:inline-block;border:1px solid rgba(200,149,58,0.3);padding:28px 56px">
+  <div style="display:inline-block;border:1px solid rgba(200,149,58,0.3);padding:32px 60px">
     <div style="font-family:'Cinzel',serif;font-size:32px;font-weight:700;letter-spacing:0.25em;margin-bottom:8px">Prime<span class="gold">Turf</span></div>
-    <div style="font-family:'Cormorant Garamond',serif;font-size:14px;font-style:italic;letter-spacing:0.25em;color:rgba(245,242,236,0.35)">Luxury Living · Lifestyle Enhancement</div>
+    <div style="font-family:'Cormorant Garamond',serif;font-size:14px;font-style:italic;letter-spacing:0.25em;color:rgba(245,242,236,0.3)">Luxury Living · Lifestyle Enhancement</div>
   </div>
 </div>
 </div>
 
 <!-- FOOTER -->
 <div class="brand-footer">
-  <div class="bf-logo">Prime<span>Turf</span></div>
+  <div class="bf-logo">Prime<span class="gold">Turf</span></div>
   <div class="bf-sub">Master Blueprint · Document 02 · Confidential</div>
-  <div style="max-width:580px;margin:0 auto 40px;font-size:11px;letter-spacing:0.18em;color:rgba(245,242,236,0.18);text-transform:uppercase;line-height:2">This document is confidential and proprietary to PrimeTurf.<br>Operational blueprint for building, scaling, and expanding the business.<br>Intellectual property of the founding team.</div>
+  <div style="max-width:580px;margin:0 auto 40px;font-size:11px;letter-spacing:0.18em;color:rgba(245,242,236,0.15);text-transform:uppercase;line-height:2.2">This document is confidential and proprietary to PrimeTurf.<br>Operational blueprint for building, scaling, and expanding the business.<br>Intellectual property of the founding team.</div>
   <div class="bf-stamp">Master Blueprint · Confidential · Pretoria East Launch Edition</div>
 </div>
+
+<style>
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+</style>
 
 </body></html>
